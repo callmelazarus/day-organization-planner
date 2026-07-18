@@ -17,6 +17,9 @@ This is most helpful for weekends, but could be used for weekdays
 - A button can be used to download the diagrams as a jpeg/pgn
 
 
+
+![Rough example of 'circular day planner'](image.png)
+
 # Stretch Goal
 - Calendar Format
 - Select a certain date will open up the circular planner
