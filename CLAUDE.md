@@ -34,6 +34,15 @@ touching a file outside that declared scope, stop and output:
 SCOPE QUESTION: <file> is outside the declared scope of this step. Expand scope or proceed differently?
 ```
 
+## Commit protocol
+
+Never commit without giving the user a chance to review first. Stage the
+changes and stop — let the user inspect the diff (they review via their
+IDE's Source Control tab) and give explicit go-ahead before running
+`git commit`. This overrides any skill or process (including the
+brainstorming skill's design-doc step) that would otherwise commit
+automatically as part of its flow.
+
 ## Hard stops
 
 - Never bypass or skip `scripts/validate.sh` to make a task look done.
