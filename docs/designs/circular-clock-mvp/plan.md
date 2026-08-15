@@ -500,7 +500,7 @@ Show the diff and wait for explicit go-ahead before committing.
 
 **Interfaces:**
 - Consumes: `Segment`, `DialType` (`src/clock/types.ts`); `buildArcPath`, `hourToAngle` (`src/clock/geometry.ts`)
-- Produces: `SegmentArcProps` type and `SegmentArc(props: SegmentArcProps): ReactElement` where `SegmentArcProps = { segment: Segment, dial: DialType, cx: number, cy: number, innerRadius: number, outerRadius: number, onClick: (segment: Segment, event: MouseEvent<SVGPathElement>) => void }` — consumed by `ClockDial` in Task 6.
+- Produces: `SegmentArcProps` type and `SegmentArc(props: SegmentArcProps): ReactElement` where `SegmentArcProps = { segment: Segment, dial: DialType, cx: number, cy: number, innerRadius: number, outerRadius: number, onClick: (segment: Segment, event: MouseEvent<SVGElement>) => void }` — consumed by `ClockDial` in Task 6.
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -584,7 +584,7 @@ export interface SegmentArcProps {
   cy: number;
   innerRadius: number;
   outerRadius: number;
-  onClick: (segment: Segment, event: MouseEvent<SVGPathElement>) => void;
+  onClick: (segment: Segment, event: MouseEvent<SVGElement>) => void;
 }
 
 export function SegmentArc({
@@ -613,6 +613,8 @@ export function SegmentArc({
   );
 }
 ```
+
+**Post-implementation note:** this sample doesn't reflect the actual shipped file. Code review found the same degenerate full-360°-arc bug here that Task 6's background wedge had — a segment spanning the full evening dial (12pm–12am) needs an `isFullCircle` branch rendering a stroked `<circle>` instead of `buildArcPath`. See the actual `src/clock/SegmentArc.tsx` for the fixed version; don't reimplement from this sample.
 
 - [ ] **Step 4: Run the tests and verify they pass**
 
@@ -810,7 +812,7 @@ Show the diff and wait for explicit go-ahead before committing.
 
 **Interfaces:**
 - Consumes: `Segment`, `DialType` (`src/clock/types.ts`); `angleToHour`, `hourToAngle`, `buildArcPath` (`src/clock/geometry.ts`); `SegmentArc` (`src/clock/SegmentArc.tsx`)
-- Produces: `ClockDialProps` type and `ClockDial(props: ClockDialProps): ReactElement` where `ClockDialProps = { dial: DialType, segments: Segment[], onSegmentClick: (segment: Segment, event: MouseEvent<SVGPathElement>) => void, onCreateSegment: (startHour: number, endHour: number, anchor: { x: number; y: number }) => void }` — consumed by `DayPlanner` in Task 7.
+- Produces: `ClockDialProps` type and `ClockDial(props: ClockDialProps): ReactElement` where `ClockDialProps = { dial: DialType, segments: Segment[], onSegmentClick: (segment: Segment, event: MouseEvent<SVGElement>) => void, onCreateSegment: (startHour: number, endHour: number, anchor: { x: number; y: number }) => void }` — consumed by `DayPlanner` in Task 7.
 
 **Note:** Per `design.md`'s Testing section, the pointer-drag interaction itself is not meaningfully unit-testable in jsdom (no real pointer capture / layout). This task's automated tests cover static rendering (tick labels, segment rendering, click forwarding) only. The drag-to-create flow is verified manually in Task 7's final step.
 
@@ -909,7 +911,7 @@ function pointerAngle(cx: number, cy: number, x: number, y: number): number {
 export interface ClockDialProps {
   dial: DialType;
   segments: Segment[];
-  onSegmentClick: (segment: Segment, event: MouseEvent<SVGPathElement>) => void;
+  onSegmentClick: (segment: Segment, event: MouseEvent<SVGElement>) => void;
   onCreateSegment: (startHour: number, endHour: number, anchor: { x: number; y: number }) => void;
 }
 
@@ -1016,10 +1018,12 @@ export function ClockDial({
 
 `onSegmentClick`'s signature matches `SegmentArc`'s `onClick` prop exactly, so it passes straight through to `<SegmentArc onClick={onSegmentClick} />` with no wrapper needed.
 
+**Post-implementation note:** this sample doesn't reflect the actual shipped file. Code review found the background wedge above is mathematically degenerate for the evening dial (`buildArcPath` called with a full 360° sweep collapses to an invisible path) — the shipped `src/clock/ClockDial.tsx` branches on `isFullCircle` and renders a stroked `<circle>` for that case instead. Don't reimplement the background wedge from this sample.
+
 - [ ] **Step 4: Run the tests and verify they pass**
 
 Run: `npx vitest run src/clock/ClockDial.test.tsx`
-Expected: PASS, all 3 tests green.
+Expected: PASS, all 4 tests green (a 4th test was added covering the circle-vs-path background rendering).
 
 - [ ] **Step 5: Stage for review**
 
@@ -1132,7 +1136,7 @@ export function DayPlanner(): ReactElement {
     setPendingCreate({ startHour, endHour, anchor });
   }
 
-  function handleSegmentClick(segment: Segment, event: MouseEvent<SVGPathElement>): void {
+  function handleSegmentClick(segment: Segment, event: MouseEvent<SVGElement>): void {
     setPendingCreate(null);
     setPendingEdit({ segment, anchor: { x: event.clientX, y: event.clientY } });
   }
