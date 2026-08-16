@@ -56,6 +56,7 @@ export function DayPlanner(): ReactElement {
 
       {pendingCreate && (
         <SegmentPopup
+          key={`${pendingCreate.startHour}-${pendingCreate.endHour}`}
           x={pendingCreate.anchor.x}
           y={pendingCreate.anchor.y}
           onSubmit={(label) => {
@@ -68,6 +69,7 @@ export function DayPlanner(): ReactElement {
 
       {pendingEdit && (
         <SegmentPopup
+          key={pendingEdit.segment.id}
           x={pendingEdit.anchor.x}
           y={pendingEdit.anchor.y}
           initialLabel={pendingEdit.segment.label}

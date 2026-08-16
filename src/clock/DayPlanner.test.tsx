@@ -1,10 +1,14 @@
-import { describe, expect, test, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, expect, test, beforeEach, afterEach } from 'vitest';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { DayPlanner } from './DayPlanner';
 
 describe('DayPlanner', () => {
   beforeEach(() => {
     localStorage.clear();
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   test('renders both the morning and evening dials', () => {
@@ -35,5 +39,38 @@ describe('DayPlanner', () => {
     render(<DayPlanner />);
 
     expect(screen.getByRole('button', { name: 'Gym' })).toBeInTheDocument();
+  });
+
+  test("switching between segments without closing the popup shows the newly clicked segment's label", () => {
+    localStorage.setItem(
+      'circular-clock-mvp:segments',
+      JSON.stringify([
+        {
+          id: '1',
+          startHour: 6,
+          endHour: 7,
+          label: 'Gym',
+          fill: 'hsl(0, 70%, 85%)',
+          textColor: 'hsl(0, 70%, 30%)',
+        },
+        {
+          id: '2',
+          startHour: 8,
+          endHour: 9,
+          label: 'Breakfast',
+          fill: 'hsl(40, 70%, 85%)',
+          textColor: 'hsl(40, 70%, 30%)',
+        },
+      ])
+    );
+
+    render(<DayPlanner />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Gym' }));
+    expect(screen.getByDisplayValue('Gym')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Breakfast' }));
+    expect(screen.getByDisplayValue('Breakfast')).toBeInTheDocument();
+    expect(screen.queryByDisplayValue('Gym')).not.toBeInTheDocument();
   });
 });
