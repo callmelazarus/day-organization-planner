@@ -29,6 +29,15 @@ export function DayPlanner(): ReactElement {
   const morningSegments = segments.filter((segment) => segment.startHour < 12);
   const eveningSegments = segments.filter((segment) => segment.startHour >= 12);
 
+  const morningPendingRange =
+    pendingCreate && pendingCreate.startHour < 12
+      ? { startHour: pendingCreate.startHour, endHour: pendingCreate.endHour }
+      : null;
+  const eveningPendingRange =
+    pendingCreate && pendingCreate.startHour >= 12
+      ? { startHour: pendingCreate.startHour, endHour: pendingCreate.endHour }
+      : null;
+
   function handleCreateSegment(startHour: number, endHour: number, anchor: Anchor): void {
     setPendingEdit(null);
     setPendingCreate({ startHour, endHour, anchor });
@@ -46,12 +55,14 @@ export function DayPlanner(): ReactElement {
         segments={morningSegments}
         onSegmentClick={handleSegmentClick}
         onCreateSegment={handleCreateSegment}
+        pendingRange={morningPendingRange}
       />
       <ClockDial
         dial="evening"
         segments={eveningSegments}
         onSegmentClick={handleSegmentClick}
         onCreateSegment={handleCreateSegment}
+        pendingRange={eveningPendingRange}
       />
 
       {pendingCreate && (

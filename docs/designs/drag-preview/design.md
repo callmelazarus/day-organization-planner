@@ -31,12 +31,35 @@ Both are purely local, derived-from-existing-state additions to
 `ClockDial` — no prop changes, no changes to `useSegments`, `DayPlanner`, or
 `SegmentArc`.
 
+### Addendum: persisting the preview through the create popup
+
+Manual verification of the above surfaced a gap: `ClockDial` clears its
+drag state (and therefore the preview) the instant the pointer is
+released, which is also the instant `DayPlanner` opens the label popup for
+the new segment — so the one moment the user most wants to see the range
+(while typing its label) is exactly when it disappears.
+
+Fix, scoped to the create flow only (editing an existing segment already
+shows its bounds via that segment's own saved-color arc, so no change
+there): `ClockDialProps` gains an optional `pendingRange: { startHour:
+number; endHour: number } | null` prop, controlled by `DayPlanner` from its
+existing `pendingCreate` state (routed to whichever dial the range belongs
+to, using the same `startHour < 12` convention `DayPlanner` already uses to
+split segments between dials). `ClockDial` renders the live drag preview
+when a drag is in progress; once the drag ends, if `pendingRange` is set it
+renders the same dashed/semi-transparent wedge and label for that fixed
+range instead — unchanged in appearance, just no longer tied to transient
+drag state. It clears the moment `DayPlanner` clears `pendingCreate`
+(submit, cancel, or the popup unmounting), which already happens today.
+
 ## Non-goals
 
 - Changing the drag-to-hour rounding/snapping behavior itself — it already
   snaps to whole hours; this design only makes that snapping visible during
   the drag.
-- Any change to the post-release `SegmentPopup` flow.
+- Any change to the post-release `SegmentPopup` flow beyond keeping the
+  create-range preview visible while it's open (see addendum above) —
+  no change to the edit-popup flow, no new popup content or controls.
 - Sub-hour precision or a finer-grained drag mode.
 
 ## Open questions

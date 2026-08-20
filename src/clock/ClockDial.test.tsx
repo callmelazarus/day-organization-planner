@@ -59,4 +59,28 @@ describe('ClockDial', () => {
     );
     expect(morningContainer.querySelector('[data-testid="dial-background"]')?.tagName).toBe('path');
   });
+
+  test('renders no drag preview before any pointer interaction', () => {
+    const { container } = render(
+      <ClockDial dial="morning" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+    );
+
+    expect(container.querySelector('[data-testid="drag-preview"]')).not.toBeInTheDocument();
+    expect(container.querySelector('[data-testid="drag-preview-label"]')).not.toBeInTheDocument();
+  });
+
+  test('renders a frozen preview from pendingRange when no drag is in progress', () => {
+    const { container } = render(
+      <ClockDial
+        dial="morning"
+        segments={[]}
+        onSegmentClick={() => {}}
+        onCreateSegment={() => {}}
+        pendingRange={{ startHour: 6, endHour: 7 }}
+      />
+    );
+
+    expect(container.querySelector('[data-testid="drag-preview"]')).toBeInTheDocument();
+    expect(screen.getByText('6am – 7am')).toBeInTheDocument();
+  });
 });

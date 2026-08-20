@@ -1,13 +1,17 @@
-# Session State: <name>
+# Session State: drag-preview
 
 ## Last updated
 
-<date>
+2026-08-19
 
 ## Where things stand
 
-Which plan step is in progress, what's been tried, what's left.
+All 4 plan tasks are implemented, task-reviewed clean, and staged.
+`scripts/validate.sh` passes in full. Manual browser verification passed —
+the user confirmed both the live drag preview and its persistence through
+the create-label popup work as intended. Awaiting the final whole-branch
+review, then commit and push.
 
 ## Next action
 
-The single next concrete thing to do when work resumes.
+None — feature complete pending final review, commit, and push.

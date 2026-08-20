@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import type { MouseEvent, PointerEvent as ReactPointerEvent, ReactElement } from 'react';
 import { angleToHour, buildArcPath, hourToAngle } from './geometry';
+import { computeDragPreview } from './dragPreview';
+import { hourLabel } from './hourLabel';
 import { SegmentArc } from './SegmentArc';
 import type { DialType, Segment } from './types';
 
@@ -8,14 +10,10 @@ const SIZE = 400;
 const CENTER = SIZE / 2;
 const OUTER_RADIUS = 150;
 const INNER_RADIUS = 60;
+const PREVIEW_COLOR = '#7aa2e3';
 
 const MORNING_HOURS = [6, 7, 8, 9, 10, 11, 12];
 const EVENING_HOURS = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
-
-function hourLabel(hour: number): string {
-  const displayHour = hour === 24 ? 12 : hour > 12 ? hour - 12 : hour;
-  return String(displayHour);
-}
 
 function pointerAngle(cx: number, cy: number, x: number, y: number): number {
   const angleRad = Math.atan2(y - cy, x - cx);
@@ -28,6 +26,7 @@ export interface ClockDialProps {
   segments: Segment[];
   onSegmentClick: (segment: Segment, event: MouseEvent<SVGElement>) => void;
   onCreateSegment: (startHour: number, endHour: number, anchor: { x: number; y: number }) => void;
+  pendingRange?: { startHour: number; endHour: number } | null;
 }
 
 export function ClockDial({
@@ -35,6 +34,7 @@ export function ClockDial({
   segments,
   onSegmentClick,
   onCreateSegment,
+  pendingRange,
 }: ClockDialProps): ReactElement {
   const svgRef = useRef<SVGSVGElement>(null);
   const [dragStartHour, setDragStartHour] = useState<number | null>(null);
@@ -44,6 +44,12 @@ export function ClockDial({
   const usedStartAngle = hourToAngle(dial, hours[0]);
   const usedEndAngle = hourToAngle(dial, hours[hours.length - 1]);
   const isFullCircle = usedEndAngle - usedStartAngle >= 360;
+  const activePreview = computeDragPreview(dial, dragStartHour, dragCurrentHour, CENTER, CENTER, INNER_RADIUS, OUTER_RADIUS);
+  const preview =
+    activePreview ??
+    (pendingRange
+      ? computeDragPreview(dial, pendingRange.startHour, pendingRange.endHour, CENTER, CENTER, INNER_RADIUS, OUTER_RADIUS)
+      : null);
 
   function hourFromPointer(event: ReactPointerEvent<SVGSVGElement>): number | null {
     const rect = svgRef.current?.getBoundingClientRect();
@@ -141,6 +147,53 @@ export function ClockDial({
           onClick={onSegmentClick}
         />
       ))}
+      {preview &&
+        (preview.isFullCircle ? (
+          <circle
+            data-testid="drag-preview"
+            cx={CENTER}
+            cy={CENTER}
+            r={(OUTER_RADIUS + INNER_RADIUS) / 2}
+            fill="none"
+            stroke={PREVIEW_COLOR}
+            strokeOpacity={0.5}
+            strokeWidth={OUTER_RADIUS - INNER_RADIUS}
+            strokeDasharray="10 6"
+            pointerEvents="none"
+          />
+        ) : (
+          <path
+            data-testid="drag-preview"
+            d={preview.arcPath}
+            fill={PREVIEW_COLOR}
+            fillOpacity={0.25}
+            stroke={PREVIEW_COLOR}
+            strokeWidth={2}
+            strokeDasharray="6 4"
+            pointerEvents="none"
+          />
+        ))}
+      {preview &&
+        (() => {
+          const labelRadius = (OUTER_RADIUS + INNER_RADIUS) / 2;
+          const rad = ((preview.midAngle - 90) * Math.PI) / 180;
+          const x = CENTER + labelRadius * Math.cos(rad);
+          const y = CENTER + labelRadius * Math.sin(rad);
+          return (
+            <text
+              data-testid="drag-preview-label"
+              x={x}
+              y={y}
+              textAnchor="middle"
+              fontSize={13}
+              fontWeight={600}
+              fill="#e8e8e8"
+              pointerEvents="none"
+            >
+              {preview.labelText}
+            </text>
+          );
+        })()}
     </svg>
   );
 }

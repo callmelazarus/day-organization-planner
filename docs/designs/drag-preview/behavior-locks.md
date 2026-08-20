@@ -33,3 +33,16 @@ is broken if any future change makes its proof condition false.
   branch already used for the background wedge and `SegmentArc`.
 - **Test pointer:** Manual verification; mirrors the existing coverage
   pattern for `isFullCircle` in `src/clock/ClockDial.test.tsx`.
+
+## Lock 4: Create-range preview persists through the label popup
+
+- **Invariant:** After releasing a valid drag (which opens the create
+  popup), the wedge and label for that exact range must stay visible for
+  as long as the popup is open, and disappear only when `DayPlanner`
+  clears `pendingCreate` (submit, cancel, or delete) — never at the moment
+  of release itself.
+- **Proof condition:** `ClockDial` falls back to rendering
+  `computeDragPreview` for its `pendingRange` prop whenever no live drag is
+  in progress; `DayPlanner` only clears `pendingRange` (by clearing
+  `pendingCreate`) on popup submit/cancel, not on pointer-up.
+- **Test pointer:** Manual verification — see `plan.md` Task 5.

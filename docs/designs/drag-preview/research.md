@@ -35,3 +35,20 @@
   rounded-to-whole-hour values (`dragStartHour`/`dragCurrentHour`) and the
   same `hourToAngle` function used to place the tick labels, so the arc
   boundary always lands exactly on a tick, never partway between two hours.
+
+## Follow-up: preview disappearing behind the create popup
+
+Manual verification (Task 4) found the preview vanished the instant the
+drag ended, right as the label popup opened for it — the opposite of what
+the feature was for. Two follow-up questions, resolved directly with the
+user (not a full brainstorming pass, since the fix is a small, well-bounded
+extension of the already-approved design):
+
+- **Also freeze the preview for the edit flow (clicking an existing
+  segment)?** No — create flow only. An existing segment already renders in
+  its own saved color, so its boundaries are already visible; only the
+  create flow had a gap.
+- **Should the frozen preview look different from the live-drag one (e.g.
+  solid instead of dashed) to signal "locked in"?** No — keep the same
+  dashed/semi-transparent wedge; it should just stop disappearing, not
+  change appearance.
