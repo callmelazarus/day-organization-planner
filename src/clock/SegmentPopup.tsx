@@ -30,7 +30,19 @@ export function SegmentPopup({
   return (
     <form
       onSubmit={handleSubmit}
-      style={{ position: 'fixed', left: x, top: y }}
+      style={{
+        position: 'fixed',
+        left: x,
+        top: y,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 10,
+        padding: 16,
+        borderRadius: 12,
+        backgroundColor: '#d9d9d9',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+        zIndex: 10,
+      }}
       data-testid="segment-popup"
     >
       <input
@@ -38,16 +50,27 @@ export function SegmentPopup({
         onChange={(event) => setLabel(event.target.value)}
         placeholder="What's planned?"
         autoFocus
+        style={{
+          width: 240,
+          padding: '10px 14px',
+          fontSize: '1.05rem',
+          borderRadius: 8,
+          border: '1px solid #aaa',
+          backgroundColor: '#d9d9d9',
+          color: '#1a1a1a',
+        }}
       />
-      <button type="submit">Save</button>
-      <button type="button" onClick={onCancel}>
-        Cancel
-      </button>
-      {onDelete && (
-        <button type="button" onClick={onDelete}>
-          Delete
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button type="submit">Save</button>
+        <button type="button" onClick={onCancel}>
+          Cancel
         </button>
-      )}
+        {onDelete && (
+          <button type="button" onClick={onDelete}>
+            Delete
+          </button>
+        )}
+      </div>
     </form>
   );
 }
