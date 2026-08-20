@@ -50,20 +50,26 @@ export function DayPlanner(): ReactElement {
 
   return (
     <div style={{ display: 'flex', gap: 40, justifyContent: 'center' }}>
-      <ClockDial
-        dial="morning"
-        segments={morningSegments}
-        onSegmentClick={handleSegmentClick}
-        onCreateSegment={handleCreateSegment}
-        pendingRange={morningPendingRange}
-      />
-      <ClockDial
-        dial="evening"
-        segments={eveningSegments}
-        onSegmentClick={handleSegmentClick}
-        onCreateSegment={handleCreateSegment}
-        pendingRange={eveningPendingRange}
-      />
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+        <ClockDial
+          dial="morning"
+          segments={morningSegments}
+          onSegmentClick={handleSegmentClick}
+          onCreateSegment={handleCreateSegment}
+          pendingRange={morningPendingRange}
+        />
+        <span style={{ fontSize: 20 }}>AM</span>
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+        <ClockDial
+          dial="evening"
+          segments={eveningSegments}
+          onSegmentClick={handleSegmentClick}
+          onCreateSegment={handleCreateSegment}
+          pendingRange={eveningPendingRange}
+        />
+        <span style={{ fontSize: 20 }}>PM</span>
+      </div>
 
       {pendingCreate && (
         <SegmentPopup
