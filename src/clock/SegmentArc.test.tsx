@@ -85,4 +85,54 @@ describe('SegmentArc', () => {
     fireEvent.click(el);
     expect(handleClick).toHaveBeenCalledWith(fullDaySegment, expect.anything());
   });
+
+  test('renders the label as visible text in the segment textColor, not blocking clicks', () => {
+    render(
+      <svg>
+        <SegmentArc
+          segment={segment}
+          dial="morning"
+          cx={200}
+          cy={200}
+          innerRadius={60}
+          outerRadius={150}
+          onClick={() => {}}
+        />
+      </svg>
+    );
+
+    const label = screen.getByText('Gym');
+    expect(label.tagName).toBe('text');
+    expect(label).toHaveAttribute('fill', 'hsl(180, 70%, 30%)');
+    expect(label).toHaveAttribute('pointer-events', 'none');
+  });
+
+  test('renders the label as visible text for a full-circle segment too', () => {
+    const fullDaySegment: Segment = {
+      id: '2',
+      startHour: 12,
+      endHour: 24,
+      label: 'Sleep',
+      fill: 'hsl(220, 70%, 85%)',
+      textColor: 'hsl(220, 70%, 30%)',
+    };
+
+    render(
+      <svg>
+        <SegmentArc
+          segment={fullDaySegment}
+          dial="evening"
+          cx={200}
+          cy={200}
+          innerRadius={60}
+          outerRadius={150}
+          onClick={() => {}}
+        />
+      </svg>
+    );
+
+    const label = screen.getByText('Sleep');
+    expect(label.tagName).toBe('text');
+    expect(label).toHaveAttribute('fill', 'hsl(220, 70%, 30%)');
+  });
 });
