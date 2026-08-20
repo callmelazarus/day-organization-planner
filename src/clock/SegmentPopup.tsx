@@ -61,12 +61,22 @@ export function SegmentPopup({
         }}
       />
       <div style={{ display: 'flex', gap: 8 }}>
-        <button type="submit">Save</button>
-        <button type="button" onClick={onCancel}>
+        <button type="submit" style={{ backgroundColor: '#4caf6a', color: '#0d1f13' }}>
+          Save
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          style={{ backgroundColor: '#9e9e9e', color: '#1a1a1a' }}
+        >
           Cancel
         </button>
         {onDelete && (
-          <button type="button" onClick={onDelete}>
+          <button
+            type="button"
+            onClick={onDelete}
+            style={{ backgroundColor: '#e08585', color: '#3a0d0d' }}
+          >
             Delete
           </button>
         )}
