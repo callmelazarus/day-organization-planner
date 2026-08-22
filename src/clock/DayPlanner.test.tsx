@@ -73,4 +73,31 @@ describe('DayPlanner', () => {
     expect(screen.getByDisplayValue('Breakfast')).toBeInTheDocument();
     expect(screen.queryByDisplayValue('Gym')).not.toBeInTheDocument();
   });
+
+  test('the "View all tasks" button opens and closes the task list modal', () => {
+    localStorage.setItem(
+      'circular-clock-mvp:segments',
+      JSON.stringify([
+        {
+          id: '1',
+          startHour: 6,
+          endHour: 7,
+          label: 'Gym',
+          fill: 'hsl(0, 70%, 85%)',
+          textColor: 'hsl(0, 70%, 30%)',
+        },
+      ])
+    );
+
+    render(<DayPlanner />);
+
+    expect(screen.queryByRole('dialog', { name: 'All tasks' })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'View all tasks' }));
+    expect(screen.getByRole('dialog', { name: 'All tasks' })).toBeInTheDocument();
+    expect(screen.getByText('6am – 7am')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    expect(screen.queryByRole('dialog', { name: 'All tasks' })).not.toBeInTheDocument();
+  });
 });

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { MouseEvent, ReactElement } from 'react';
 import { ClockDial } from './ClockDial';
 import { SegmentPopup } from './SegmentPopup';
+import { TaskListModal } from './TaskListModal';
 import { useSegments } from './useSegments';
 import type { Segment } from './types';
 
@@ -25,6 +26,7 @@ export function DayPlanner(): ReactElement {
   const { segments, addSegment, updateSegment, deleteSegment } = useSegments();
   const [pendingCreate, setPendingCreate] = useState<PendingCreate | null>(null);
   const [pendingEdit, setPendingEdit] = useState<PendingEdit | null>(null);
+  const [isTaskListOpen, setIsTaskListOpen] = useState(false);
 
   const morningSegments = segments.filter((segment) => segment.startHour < 12);
   const eveningSegments = segments.filter((segment) => segment.startHour >= 12);
@@ -49,27 +51,37 @@ export function DayPlanner(): ReactElement {
   }
 
   return (
-    <div style={{ display: 'flex', gap: 40, justifyContent: 'center' }}>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-        <ClockDial
-          dial="morning"
-          segments={morningSegments}
-          onSegmentClick={handleSegmentClick}
-          onCreateSegment={handleCreateSegment}
-          pendingRange={morningPendingRange}
-        />
-        <span style={{ fontSize: 20 }}>AM</span>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
+      <div style={{ display: 'flex', gap: 40, justifyContent: 'center' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+          <ClockDial
+            dial="morning"
+            segments={morningSegments}
+            onSegmentClick={handleSegmentClick}
+            onCreateSegment={handleCreateSegment}
+            pendingRange={morningPendingRange}
+          />
+          <span style={{ fontSize: 20 }}>AM</span>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+          <ClockDial
+            dial="evening"
+            segments={eveningSegments}
+            onSegmentClick={handleSegmentClick}
+            onCreateSegment={handleCreateSegment}
+            pendingRange={eveningPendingRange}
+          />
+          <span style={{ fontSize: 20 }}>PM</span>
+        </div>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
-        <ClockDial
-          dial="evening"
-          segments={eveningSegments}
-          onSegmentClick={handleSegmentClick}
-          onCreateSegment={handleCreateSegment}
-          pendingRange={eveningPendingRange}
-        />
-        <span style={{ fontSize: 20 }}>PM</span>
-      </div>
+
+      <button type="button" onClick={() => setIsTaskListOpen(true)}>
+        View all tasks
+      </button>
+
+      {isTaskListOpen && (
+        <TaskListModal segments={segments} onClose={() => setIsTaskListOpen(false)} />
+      )}
 
       {pendingCreate && (
         <SegmentPopup
