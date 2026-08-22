@@ -13,7 +13,7 @@ const INNER_RADIUS = 60;
 const PREVIEW_COLOR = '#7aa2e3';
 
 const MORNING_HOURS = [6, 7, 8, 9, 10, 11, 12];
-const EVENING_HOURS = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
+const EVENING_HOURS = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
 
 function pointerAngle(cx: number, cy: number, x: number, y: number): number {
   const angleRad = Math.atan2(y - cy, x - cx);

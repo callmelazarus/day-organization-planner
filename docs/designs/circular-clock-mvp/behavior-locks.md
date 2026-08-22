@@ -15,7 +15,12 @@ is broken if any future change makes its proof condition false.
   valid hour and must not produce a segment.
 - **Test pointer:** `src/clock/geometry.test.ts` (Morning dial mapping cases)
 
-## Lock 2: Evening dial hour mapping
+## Lock 2: Evening dial hour mapping (SUPERSEDED — see `pm-dial-stop-at-11pm`)
+
+> **Superseded 2026-08-21.** The Evening dial no longer uses the full
+> circle — it now stops at 11pm. See
+> `docs/designs/pm-dial-stop-at-11pm/behavior-locks.md` Lock 1 for the
+> current invariant. The text below is kept for historical record only.
 
 - **Invariant:** On the Evening dial, 12pm renders at the top (0°/360°) and
   the full circle is used at standard 30°/hour spacing, ending back at

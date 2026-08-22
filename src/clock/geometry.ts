@@ -9,6 +9,7 @@ export function angleToHour(dial: DialType, angleDeg: number): number | null {
     return 6 + (effective - 180) / 30;
   }
 
+  if (normalized > 330) return null;
   return 12 + normalized / 30;
 }
 

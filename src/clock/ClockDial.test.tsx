@@ -48,11 +48,11 @@ describe('ClockDial', () => {
     expect(handleClick).toHaveBeenCalledWith(segment, expect.anything());
   });
 
-  test('renders a stroked circle background for the full-circle evening dial, and an arc path for the partial morning dial', () => {
+  test('renders an arc path background for both the evening and morning dials (neither is a full circle)', () => {
     const { container: eveningContainer } = render(
       <ClockDial dial="evening" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
     );
-    expect(eveningContainer.querySelector('[data-testid="dial-background"]')?.tagName).toBe('circle');
+    expect(eveningContainer.querySelector('[data-testid="dial-background"]')?.tagName).toBe('path');
 
     const { container: morningContainer } = render(
       <ClockDial dial="morning" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />

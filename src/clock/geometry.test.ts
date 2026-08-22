@@ -14,13 +14,19 @@ describe('angleToHour', () => {
     expect(angleToHour('morning', 179)).toBeNull();
   });
 
-  test('evening dial maps the full circle', () => {
+  test('evening dial maps 12pm through 11pm', () => {
     expect(angleToHour('evening', 0)).toBe(12);
     expect(angleToHour('evening', 180)).toBe(18);
     expect(angleToHour('evening', 270)).toBe(21);
+    expect(angleToHour('evening', 330)).toBe(23);
   });
 
-  test('the 0deg/360deg seam resolves to 12 (documented ambiguity, see behavior-locks.md Lock 2)', () => {
+  test('evening dial returns null for the 11pm-12am dead zone', () => {
+    expect(angleToHour('evening', 331)).toBeNull();
+    expect(angleToHour('evening', 350)).toBeNull();
+  });
+
+  test('the 0deg/360deg seam resolves to 12, the dial start (not the removed 12am hour)', () => {
     expect(angleToHour('evening', 360)).toBe(12);
     expect(angleToHour('evening', 0)).toBe(12);
   });
