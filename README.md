@@ -1,28 +1,62 @@
+# Day Organization Planner
 
+A frontend-only web app for visually planning a day on a circular clock face.
+Drag out time segments, label each one with what's planned, and see the whole
+day at a glance. Built with React + TypeScript (Vite), no backend.
 
+Most useful for weekends, but works for any day.
 
-# Purpose
-Provide a frontend website that can help provide a way to plan days with a visual clock that a user can block out time segments and the activity associated with those blocks
+## How it works
 
-This is most helpful for weekends, but could be used for weekdays
+The day is split into two clock dials:
 
+- **AM dial** — 6:00 to 12:00
+- **PM dial** — 12:00 to 11:00 PM
 
-# Planning / goals
-- Frontend website that is able to display a circular diagram/clock for each day.  We will call the circular diagram as the 'circular day planner'
-- One day is shown, and certain sections can be defined for certain hours
-- User clicks on the clock, and it will snap to specific hours, user will click and drag to select the hour bounds for the segments 
-- when you draw a specific section, after that is defined, a text input will open very close to that segment to define what is planned for that segment
-- Segments will be pastel colored (randomly) - with the associated text a darker tone of that same pastel color for that segement
-- Additional days can be added, with the same sections
-- A button can be used to download the diagrams as a jpeg/pgn
+To plan a segment, click and drag across the dial between the start and end
+hour you want; the dial snaps to whole hours and shows a live preview of the
+range as you drag. On release, a small popup opens next to where you let go
+asking what's planned for that block.
 
+Each segment is filled with a random pastel color, with its label rendered in
+a darker shade of the same hue so it stays readable against the fill. Segment
+labels are shown directly on the dial.
 
+Click an existing segment to reopen its popup, where you can edit the label
+or delete the segment entirely.
 
-![Rough example of 'circular day planner'](image.png)
+A **"View all tasks"** button opens a modal listing every segment for the day
+in chronological order, independent of which dial (AM/PM) it's on.
 
-# Stretch Goal
-- Calendar Format
-- Select a certain date will open up the circular planner
+## Stack
 
+- React 19 + TypeScript
+- Vite (dev server / build)
+- Vitest + Testing Library (unit/component tests)
 
+## Getting started
+
+```bash
+npm install
+npm run dev
+```
+
+## Project docs
+
+Design history for each feature lives under `docs/designs/<feature-name>/`
+(design rationale, plan, and behavior locks). See `docs/designs/README.md`
+for how designs are structured, and `CLAUDE.md` for the working agreement
+used when developing this repo with an AI agent.
+
+## Not yet built
+
+These were part of the original concept but aren't implemented yet:
+
+- Exporting a day's diagram as a JPEG/PNG image
+- Multiple days shown side by side
+- A calendar view for picking a date to plan
+
+![Rough example of the circular day planner concept](image.png)
+
+---
 init: 7/18/2026
