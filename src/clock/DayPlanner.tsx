@@ -3,7 +3,9 @@ import type { MouseEvent, ReactElement } from 'react';
 import { ClockDial } from './ClockDial';
 import { SegmentPopup } from './SegmentPopup';
 import { TaskListModal } from './TaskListModal';
+import { TodoList } from './TodoList';
 import { useSegments } from './useSegments';
+import { useTodos } from './useTodos';
 import type { Segment } from './types';
 
 interface Anchor {
@@ -24,6 +26,7 @@ interface PendingEdit {
 
 export function DayPlanner(): ReactElement {
   const { segments, addSegment, updateSegment, deleteSegment } = useSegments();
+  const { todos, addTodo, deleteTodo, toggleStar } = useTodos();
   const [pendingCreate, setPendingCreate] = useState<PendingCreate | null>(null);
   const [pendingEdit, setPendingEdit] = useState<PendingEdit | null>(null);
   const [isTaskListOpen, setIsTaskListOpen] = useState(false);
@@ -78,6 +81,8 @@ export function DayPlanner(): ReactElement {
       <button type="button" onClick={() => setIsTaskListOpen(true)}>
         View all tasks
       </button>
+
+      <TodoList todos={todos} onAdd={addTodo} onDelete={deleteTodo} onToggleStar={toggleStar} />
 
       {isTaskListOpen && (
         <TaskListModal segments={segments} onClose={() => setIsTaskListOpen(false)} />

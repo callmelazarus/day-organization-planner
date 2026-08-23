@@ -8,3 +8,9 @@ export interface Segment {
   fill: string;
   textColor: string;
 }
+
+export interface Todo {
+  id: string;
+  text: string;
+  starred: boolean;
+}

@@ -6,11 +6,11 @@
 
 ## Where things stand
 
-Design, research, plan, and behavior locks written and approved by the
-user. No implementation yet.
+All 4 plan steps implemented via TDD and passing `scripts/validate.sh`.
+Feature complete: always-visible todo list below the dials, with
+add/delete/star, starred-first ordering, and localStorage persistence.
 
 ## Next action
 
-Start Step 1 of `plan.md` (add the `Todo` type to `src/clock/types.ts`),
-then proceed through Steps 2-4 using TDD (tests before implementation) per
-the plan.
+None — feature complete pending user's manual review/verification and
+commit.

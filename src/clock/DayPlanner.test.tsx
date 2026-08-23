@@ -100,4 +100,21 @@ describe('DayPlanner', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Close' }));
     expect(screen.queryByRole('dialog', { name: 'All tasks' })).not.toBeInTheDocument();
   });
+
+  test('the todo list is always visible without needing a button to open it', () => {
+    render(<DayPlanner />);
+
+    expect(screen.getByText('No todos yet')).toBeInTheDocument();
+  });
+
+  test('adding a todo shows it in the always-visible todo list', () => {
+    render(<DayPlanner />);
+
+    fireEvent.change(screen.getByPlaceholderText("What's on your mind?"), {
+      target: { value: 'Buy groceries' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Add' }));
+
+    expect(screen.getByText('Buy groceries')).toBeInTheDocument();
+  });
 });
