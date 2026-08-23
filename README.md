@@ -1,5 +1,7 @@
 # Day Organization Planner
 
+**Live site:** https://day-organization-planner.vercel.app/
+
 A frontend-only web app for visually planning a day on a circular clock face.
 Drag out time segments, label each one with what's planned, and see the whole
 day at a glance. Built with React + TypeScript (Vite), no backend.
