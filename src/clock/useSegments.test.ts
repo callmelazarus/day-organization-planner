@@ -103,4 +103,34 @@ describe('useSegments', () => {
     const { result } = renderHook(() => useSegments());
     expect(result.current.segments).toEqual([]);
   });
+
+  test('clearSegments removes all segments', () => {
+    const { result } = renderHook(() => useSegments());
+
+    act(() => {
+      result.current.addSegment(6, 7, 'Gym');
+      result.current.addSegment(8, 9, 'Breakfast');
+    });
+
+    act(() => {
+      result.current.clearSegments();
+    });
+
+    expect(result.current.segments).toEqual([]);
+  });
+
+  test('clearSegments persists the empty list', () => {
+    const { result, unmount } = renderHook(() => useSegments());
+
+    act(() => {
+      result.current.addSegment(6, 7, 'Gym');
+    });
+    act(() => {
+      result.current.clearSegments();
+    });
+    unmount();
+
+    const { result: reloaded } = renderHook(() => useSegments());
+    expect(reloaded.current.segments).toEqual([]);
+  });
 });

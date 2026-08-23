@@ -7,6 +7,7 @@ export interface UseSegmentsResult {
   addSegment: (startHour: number, endHour: number, label: string) => void;
   updateSegment: (id: string, label: string) => void;
   deleteSegment: (id: string) => void;
+  clearSegments: () => void;
 }
 
 const STORAGE_KEY = 'circular-clock-mvp:segments';
@@ -59,5 +60,9 @@ export function useSegments(): UseSegmentsResult {
     setSegments((prev) => prev.filter((segment) => segment.id !== id));
   }
 
-  return { segments, addSegment, updateSegment, deleteSegment };
+  function clearSegments(): void {
+    setSegments([]);
+  }
+
+  return { segments, addSegment, updateSegment, deleteSegment, clearSegments };
 }

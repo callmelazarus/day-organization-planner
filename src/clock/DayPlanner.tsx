@@ -25,7 +25,7 @@ interface PendingEdit {
 }
 
 export function DayPlanner(): ReactElement {
-  const { segments, addSegment, updateSegment, deleteSegment } = useSegments();
+  const { segments, addSegment, updateSegment, deleteSegment, clearSegments } = useSegments();
   const { todos, addTodo, deleteTodo, toggleStar } = useTodos();
   const [pendingCreate, setPendingCreate] = useState<PendingCreate | null>(null);
   const [pendingEdit, setPendingEdit] = useState<PendingEdit | null>(null);
@@ -53,6 +53,12 @@ export function DayPlanner(): ReactElement {
     setPendingEdit({ segment, anchor: { x: event.clientX, y: event.clientY } });
   }
 
+  function handleClear(): void {
+    if (window.confirm('Clear all tasks?')) {
+      clearSegments();
+    }
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
       <div style={{ display: 'flex', gap: 40, justifyContent: 'center' }}>
@@ -78,9 +84,14 @@ export function DayPlanner(): ReactElement {
         </div>
       </div>
 
-      <button type="button" onClick={() => setIsTaskListOpen(true)}>
-        View all tasks
-      </button>
+      <div style={{ display: 'flex', gap: 12 }}>
+        <button type="button" onClick={() => setIsTaskListOpen(true)}>
+          View all tasks
+        </button>
+        <button type="button" onClick={handleClear}>
+          Clear
+        </button>
+      </div>
 
       <TodoList todos={todos} onAdd={addTodo} onDelete={deleteTodo} onToggleStar={toggleStar} />
 

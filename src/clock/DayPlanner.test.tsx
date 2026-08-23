@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeEach, afterEach } from 'vitest';
+import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { DayPlanner } from './DayPlanner';
 
@@ -99,6 +99,54 @@ describe('DayPlanner', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Close' }));
     expect(screen.queryByRole('dialog', { name: 'All tasks' })).not.toBeInTheDocument();
+  });
+
+  test('the Clear button removes all segments after confirming', () => {
+    localStorage.setItem(
+      'circular-clock-mvp:segments',
+      JSON.stringify([
+        {
+          id: '1',
+          startHour: 6,
+          endHour: 7,
+          label: 'Gym',
+          fill: 'hsl(0, 70%, 85%)',
+          textColor: 'hsl(0, 70%, 30%)',
+        },
+      ])
+    );
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+    render(<DayPlanner />);
+
+    expect(screen.getByRole('button', { name: 'Gym' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Clear' }));
+
+    expect(window.confirm).toHaveBeenCalledWith('Clear all tasks?');
+    expect(screen.queryByRole('button', { name: 'Gym' })).not.toBeInTheDocument();
+  });
+
+  test('the Clear button does nothing if the confirmation is declined', () => {
+    localStorage.setItem(
+      'circular-clock-mvp:segments',
+      JSON.stringify([
+        {
+          id: '1',
+          startHour: 6,
+          endHour: 7,
+          label: 'Gym',
+          fill: 'hsl(0, 70%, 85%)',
+          textColor: 'hsl(0, 70%, 30%)',
+        },
+      ])
+    );
+    vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+    render(<DayPlanner />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Clear' }));
+
+    expect(screen.getByRole('button', { name: 'Gym' })).toBeInTheDocument();
   });
 
   test('the todo list is always visible without needing a button to open it', () => {
