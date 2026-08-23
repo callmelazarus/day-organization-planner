@@ -49,7 +49,7 @@ describe('TodoList', () => {
     const handleAdd = vi.fn();
     render(<TodoList todos={[]} onAdd={handleAdd} onDelete={() => {}} onToggleStar={() => {}} />);
 
-    const input = screen.getByPlaceholderText("What's on your mind?");
+    const input = screen.getByPlaceholderText("Keep going!");
     fireEvent.change(input, { target: { value: 'New task' } });
     fireEvent.click(screen.getByRole('button', { name: 'Add' }));
 
@@ -61,7 +61,7 @@ describe('TodoList', () => {
     const handleAdd = vi.fn();
     render(<TodoList todos={[]} onAdd={handleAdd} onDelete={() => {}} onToggleStar={() => {}} />);
 
-    const input = screen.getByPlaceholderText("What's on your mind?");
+    const input = screen.getByPlaceholderText("Keep going!");
     fireEvent.change(input, { target: { value: 'New task' } });
     fireEvent.submit(input.closest('form')!);
 
@@ -72,7 +72,7 @@ describe('TodoList', () => {
     const handleAdd = vi.fn();
     render(<TodoList todos={[]} onAdd={handleAdd} onDelete={() => {}} onToggleStar={() => {}} />);
 
-    const input = screen.getByPlaceholderText("What's on your mind?");
+    const input = screen.getByPlaceholderText("Keep going!");
     fireEvent.change(input, { target: { value: '   ' } });
     fireEvent.submit(input.closest('form')!);
 

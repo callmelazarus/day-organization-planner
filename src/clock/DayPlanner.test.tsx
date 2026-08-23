@@ -110,7 +110,7 @@ describe('DayPlanner', () => {
   test('adding a todo shows it in the always-visible todo list', () => {
     render(<DayPlanner />);
 
-    fireEvent.change(screen.getByPlaceholderText("What's on your mind?"), {
+    fireEvent.change(screen.getByPlaceholderText("Keep going!"), {
       target: { value: 'Buy groceries' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Add' }));

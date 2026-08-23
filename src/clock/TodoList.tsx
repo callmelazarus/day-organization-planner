@@ -40,7 +40,7 @@ export function TodoList({ todos, onAdd, onDelete, onToggleStar }: TodoListProps
         <input
           value={text}
           onChange={(event) => setText(event.target.value)}
-          placeholder="What's on your mind?"
+          placeholder="Keep going!"
           style={{
             flex: 1,
             padding: '8px 12px',
