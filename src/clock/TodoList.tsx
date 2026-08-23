@@ -32,8 +32,8 @@ export function TodoList({ todos, onAdd, onDelete, onToggleStar }: TodoListProps
         gap: 12,
         padding: 16,
         borderRadius: 12,
-        backgroundColor: '#d9d9d9',
-        color: '#1a1a1a',
+        backgroundColor: '#3a3a3a',
+        color: '#e8e8e8',
       }}
     >
       <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 8 }}>
@@ -46,9 +46,9 @@ export function TodoList({ todos, onAdd, onDelete, onToggleStar }: TodoListProps
             padding: '8px 12px',
             fontSize: '1rem',
             borderRadius: 8,
-            border: '1px solid #aaa',
-            backgroundColor: '#d9d9d9',
-            color: '#1a1a1a',
+            border: '1px solid #666',
+            backgroundColor: '#2b2b2b',
+            color: '#e8e8e8',
           }}
         />
         <button type="submit" style={{ backgroundColor: '#4caf6a', color: '#0d1f13' }}>
@@ -69,7 +69,7 @@ export function TodoList({ todos, onAdd, onDelete, onToggleStar }: TodoListProps
                 gap: 8,
                 padding: '6px 10px',
                 borderRadius: 8,
-                backgroundColor: todo.starred ? '#f5e6a3' : '#ececec',
+                backgroundColor: todo.starred ? '#6b5b1f' : '#4a4a4a',
               }}
             >
               <button
