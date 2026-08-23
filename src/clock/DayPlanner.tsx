@@ -70,7 +70,7 @@ export function DayPlanner(): ReactElement {
             onCreateSegment={handleCreateSegment}
             pendingRange={morningPendingRange}
           />
-          <span style={{ fontSize: 20 }}>AM</span>
+          <span style={{ fontSize: 20 }}>☀️ AM</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
           <ClockDial
@@ -80,7 +80,7 @@ export function DayPlanner(): ReactElement {
             onCreateSegment={handleCreateSegment}
             pendingRange={eveningPendingRange}
           />
-          <span style={{ fontSize: 20 }}>PM</span>
+          <span style={{ fontSize: 20 }}>🌙 PM</span>
         </div>
       </div>
 

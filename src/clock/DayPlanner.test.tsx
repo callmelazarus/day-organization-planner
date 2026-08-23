@@ -21,6 +21,13 @@ describe('DayPlanner', () => {
     expect(screen.getAllByText('6').length).toBeGreaterThanOrEqual(2);
   });
 
+  test('labels the dials with a sun emoji for AM and a moon emoji for PM', () => {
+    render(<DayPlanner />);
+
+    expect(screen.getByText('☀️ AM')).toBeInTheDocument();
+    expect(screen.getByText('🌙 PM')).toBeInTheDocument();
+  });
+
   test('renders a persisted segment on the correct dial', () => {
     localStorage.setItem(
       'circular-clock-mvp:segments',
