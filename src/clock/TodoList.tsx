@@ -51,7 +51,7 @@ export function TodoList({ todos, onAdd, onDelete, onToggleStar }: TodoListProps
             color: '#e8e8e8',
           }}
         />
-        <button type="submit" style={{ backgroundColor: '#4caf6a', color: '#0d1f13' }}>
+        <button type="submit" style={{ backgroundColor: '#2f6b40', color: '#dff2e4' }}>
           Add
         </button>
       </form>
@@ -84,7 +84,7 @@ export function TodoList({ todos, onAdd, onDelete, onToggleStar }: TodoListProps
               <button
                 type="button"
                 onClick={() => onDelete(todo.id)}
-                style={{ backgroundColor: '#e08585', color: '#3a0d0d' }}
+                style={{ backgroundColor: '#8a3a3a', color: '#f5d9d9' }}
               >
                 Delete
               </button>
