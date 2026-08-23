@@ -83,4 +83,26 @@ describe('ClockDial', () => {
     expect(container.querySelector('[data-testid="drag-preview"]')).toBeInTheDocument();
     expect(screen.getByText('6am – 7am')).toBeInTheDocument();
   });
+
+  test('renders the morning dial background in a soft orange/yellow', () => {
+    const { container } = render(
+      <ClockDial dial="morning" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+    );
+
+    expect(container.querySelector('[data-testid="dial-background"]')).toHaveAttribute(
+      'fill',
+      '#f5b942'
+    );
+  });
+
+  test('renders the evening dial background in a soft purple/blue', () => {
+    const { container } = render(
+      <ClockDial dial="evening" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+    );
+
+    expect(container.querySelector('[data-testid="dial-background"]')).toHaveAttribute(
+      'fill',
+      '#6c63ff'
+    );
+  });
 });

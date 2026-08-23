@@ -15,6 +15,11 @@ const PREVIEW_COLOR = '#7aa2e3';
 const MORNING_HOURS = [6, 7, 8, 9, 10, 11, 12];
 const EVENING_HOURS = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
 
+const DIAL_BACKGROUND_COLOR: Record<DialType, string> = {
+  morning: '#f5b942',
+  evening: '#6c63ff',
+};
+
 function pointerAngle(cx: number, cy: number, x: number, y: number): number {
   const angleRad = Math.atan2(y - cy, x - cx);
   const angleDeg = (angleRad * 180) / Math.PI + 90;
@@ -111,16 +116,16 @@ export function ClockDial({
           cy={CENTER}
           r={(OUTER_RADIUS + INNER_RADIUS) / 2}
           fill="none"
-          stroke="#555"
+          stroke={DIAL_BACKGROUND_COLOR[dial]}
           strokeWidth={OUTER_RADIUS - INNER_RADIUS}
-          opacity={0.12}
+          opacity={0.18}
         />
       ) : (
         <path
           data-testid="dial-background"
           d={buildArcPath(CENTER, CENTER, INNER_RADIUS, OUTER_RADIUS, usedStartAngle, usedEndAngle)}
-          fill="#555"
-          opacity={0.12}
+          fill={DIAL_BACKGROUND_COLOR[dial]}
+          opacity={0.18}
         />
       )}
       {hours.map((hour) => {
