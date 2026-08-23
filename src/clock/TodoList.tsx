@@ -57,7 +57,7 @@ export function TodoList({ todos, onAdd, onDelete, onToggleStar }: TodoListProps
       </form>
 
       {orderedTodos.length === 0 ? (
-        <p style={{ margin: 0 }}>No todos yet</p>
+        <p style={{ margin: 0, fontSize: '2rem' }}>💪</p>
       ) : (
         <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
           {orderedTodos.map((todo) => (

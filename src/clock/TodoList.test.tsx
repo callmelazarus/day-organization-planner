@@ -17,10 +17,10 @@ describe('TodoList', () => {
     cleanup();
   });
 
-  test('shows an empty-state message when there are no todos', () => {
+  test('shows a muscle emoji as the empty-state message when there are no todos', () => {
     render(<TodoList todos={[]} onAdd={() => {}} onDelete={() => {}} onToggleStar={() => {}} />);
 
-    expect(screen.getByText('No todos yet')).toBeInTheDocument();
+    expect(screen.getByText('💪')).toBeInTheDocument();
   });
 
   test('renders each todo\'s text', () => {

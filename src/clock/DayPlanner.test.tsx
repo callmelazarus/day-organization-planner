@@ -104,7 +104,7 @@ describe('DayPlanner', () => {
   test('the todo list is always visible without needing a button to open it', () => {
     render(<DayPlanner />);
 
-    expect(screen.getByText('No todos yet')).toBeInTheDocument();
+    expect(screen.getByText('💪')).toBeInTheDocument();
   });
 
   test('adding a todo shows it in the always-visible todo list', () => {
