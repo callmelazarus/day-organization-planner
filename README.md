@@ -30,6 +30,9 @@ or delete the segment entirely.
 A **"View all tasks"** button opens a modal listing every segment for the day
 in chronological order, independent of which dial (AM/PM) it's on.
 
+A **"Download image"** button exports a snapshot of just the two dials as a
+PNG file, named `day-planner-YYYY-MM-DD.png`.
+
 ## Stack
 
 - React 19 + TypeScript
@@ -54,7 +57,6 @@ used when developing this repo with an AI agent.
 
 These were part of the original concept but aren't implemented yet:
 
-- Exporting a day's diagram as a JPEG/PNG image
 - Multiple days shown side by side
 - A calendar view for picking a date to plan
 
