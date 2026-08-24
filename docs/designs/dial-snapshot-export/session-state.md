@@ -6,11 +6,11 @@
 
 ## Where things stand
 
-Design, research, plan, and behavior locks written and approved by the
-user. No implementation yet.
+All 3 plan steps implemented via TDD and passing `scripts/validate.sh`.
+Feature complete: "Download image" button left of "View all tasks"
+exports the two dials as a dated PNG, zero new dependencies.
 
 ## Next action
 
-Start Step 1 of `plan.md` (`formatSnapshotFilename` in
-`src/clock/exportSnapshot.ts`), then proceed through Steps 2-3 using TDD
-(tests before implementation) per the plan.
+None — feature complete pending user's manual review/verification and
+commit.

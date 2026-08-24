@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { MouseEvent, ReactElement } from 'react';
 import { ClockDial } from './ClockDial';
 import { SegmentPopup } from './SegmentPopup';
 import { TaskListModal } from './TaskListModal';
 import { TodoList } from './TodoList';
+import { downloadDialsSnapshot } from './exportSnapshot';
 import { useSegments } from './useSegments';
 import { useTodos } from './useTodos';
 import type { Segment } from './types';
+
+const AM_LABEL = '☀️ AM';
+const PM_LABEL = '🌙 PM';
 
 interface Anchor {
   x: number;
@@ -30,6 +34,7 @@ export function DayPlanner(): ReactElement {
   const [pendingCreate, setPendingCreate] = useState<PendingCreate | null>(null);
   const [pendingEdit, setPendingEdit] = useState<PendingEdit | null>(null);
   const [isTaskListOpen, setIsTaskListOpen] = useState(false);
+  const dialsRowRef = useRef<HTMLDivElement>(null);
 
   const morningSegments = segments.filter((segment) => segment.startHour < 12);
   const eveningSegments = segments.filter((segment) => segment.startHour >= 12);
@@ -59,9 +64,15 @@ export function DayPlanner(): ReactElement {
     }
   }
 
+  function handleDownload(): void {
+    const svgs = dialsRowRef.current?.querySelectorAll('svg');
+    if (!svgs || svgs.length < 2) return;
+    downloadDialsSnapshot(Array.from(svgs), [AM_LABEL, PM_LABEL]);
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
-      <div style={{ display: 'flex', gap: 40, justifyContent: 'center' }}>
+      <div ref={dialsRowRef} style={{ display: 'flex', gap: 40, justifyContent: 'center' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
           <ClockDial
             dial="morning"
@@ -70,7 +81,7 @@ export function DayPlanner(): ReactElement {
             onCreateSegment={handleCreateSegment}
             pendingRange={morningPendingRange}
           />
-          <span style={{ fontSize: 20 }}>☀️ AM</span>
+          <span style={{ fontSize: 20 }}>{AM_LABEL}</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
           <ClockDial
@@ -80,11 +91,14 @@ export function DayPlanner(): ReactElement {
             onCreateSegment={handleCreateSegment}
             pendingRange={eveningPendingRange}
           />
-          <span style={{ fontSize: 20 }}>🌙 PM</span>
+          <span style={{ fontSize: 20 }}>{PM_LABEL}</span>
         </div>
       </div>
 
       <div style={{ display: 'flex', gap: 12 }}>
+        <button type="button" onClick={handleDownload}>
+          Download image
+        </button>
         <button type="button" onClick={() => setIsTaskListOpen(true)}>
           View all tasks
         </button>

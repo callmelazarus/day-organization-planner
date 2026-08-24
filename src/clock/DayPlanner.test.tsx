@@ -1,6 +1,12 @@
 import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { DayPlanner } from './DayPlanner';
+import * as exportSnapshot from './exportSnapshot';
+
+vi.mock('./exportSnapshot', async () => {
+  const actual = await vi.importActual<typeof exportSnapshot>('./exportSnapshot');
+  return { ...actual, downloadDialsSnapshot: vi.fn().mockResolvedValue(undefined) };
+});
 
 describe('DayPlanner', () => {
   beforeEach(() => {
@@ -154,6 +160,19 @@ describe('DayPlanner', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Clear' }));
 
     expect(screen.getByRole('button', { name: 'Gym' })).toBeInTheDocument();
+  });
+
+  test('the "Download image" button captures both dial SVGs in order with their labels', () => {
+    render(<DayPlanner />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Download image' }));
+
+    expect(exportSnapshot.downloadDialsSnapshot).toHaveBeenCalledTimes(1);
+    const [svgs, labels] = vi.mocked(exportSnapshot.downloadDialsSnapshot).mock.calls[0];
+    expect(svgs).toHaveLength(2);
+    expect(svgs[0].tagName.toLowerCase()).toBe('svg');
+    expect(svgs[1].tagName.toLowerCase()).toBe('svg');
+    expect(labels).toEqual(['☀️ AM', '🌙 PM']);
   });
 
   test('the todo list is always visible without needing a button to open it', () => {
