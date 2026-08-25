@@ -52,20 +52,32 @@ describe('ClockDial', () => {
     expect(handleClick).toHaveBeenCalledWith(segment, expect.anything());
   });
 
-  test('renders an arc path background for both dials (neither is a full circle)', () => {
+  test('renders a full solid dark circle as the base for both dials, even though neither uses its full range', () => {
     const { container: nighttimeContainer } = render(
       <ClockDial dial="nighttime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
     );
     expect(nighttimeContainer.querySelector('[data-testid="dial-background"]')?.tagName).toBe(
-      'path'
+      'circle'
     );
 
     const { container: daytimeContainer } = render(
       <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
     );
     expect(daytimeContainer.querySelector('[data-testid="dial-background"]')?.tagName).toBe(
-      'path'
+      'circle'
     );
+  });
+
+  test('renders the used hour range as a colored arc on top of the dark base (not a full circle)', () => {
+    const { container: nighttimeContainer } = render(
+      <ClockDial dial="nighttime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+    );
+    expect(nighttimeContainer.querySelector('[data-testid="dial-range"]')?.tagName).toBe('path');
+
+    const { container: daytimeContainer } = render(
+      <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+    );
+    expect(daytimeContainer.querySelector('[data-testid="dial-range"]')?.tagName).toBe('path');
   });
 
   test('renders no drag preview before any pointer interaction', () => {
@@ -92,23 +104,23 @@ describe('ClockDial', () => {
     expect(screen.getByText('7am – 8am')).toBeInTheDocument();
   });
 
-  test('renders the daytime dial background in a soft orange/yellow', () => {
+  test('renders the daytime dial used-range highlight in a soft orange/yellow', () => {
     const { container } = render(
       <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
     );
 
-    expect(container.querySelector('[data-testid="dial-background"]')).toHaveAttribute(
+    expect(container.querySelector('[data-testid="dial-range"]')).toHaveAttribute(
       'fill',
       '#f5b942'
     );
   });
 
-  test('renders the nighttime dial background in a soft purple/blue', () => {
+  test('renders the nighttime dial used-range highlight in a soft purple/blue', () => {
     const { container } = render(
       <ClockDial dial="nighttime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
     );
 
-    expect(container.querySelector('[data-testid="dial-background"]')).toHaveAttribute(
+    expect(container.querySelector('[data-testid="dial-range"]')).toHaveAttribute(
       'fill',
       '#6c63ff'
     );

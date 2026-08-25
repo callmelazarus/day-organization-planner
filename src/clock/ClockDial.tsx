@@ -20,6 +20,8 @@ const DIAL_BACKGROUND_COLOR: Record<DialType, string> = {
   nighttime: '#6c63ff',
 };
 
+const DIAL_BASE_COLOR = '#2e2e2e';
+
 function pointerAngle(cx: number, cy: number, x: number, y: number): number {
   const angleRad = Math.atan2(y - cy, x - cx);
   const angleDeg = (angleRad * 180) / Math.PI + 90;
@@ -109,23 +111,32 @@ export function ClockDial({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
     >
+      <circle
+        data-testid="dial-background"
+        cx={CENTER}
+        cy={CENTER}
+        r={(OUTER_RADIUS + INNER_RADIUS) / 2}
+        fill="none"
+        stroke={DIAL_BASE_COLOR}
+        strokeWidth={OUTER_RADIUS - INNER_RADIUS}
+      />
       {isFullCircle ? (
         <circle
-          data-testid="dial-background"
+          data-testid="dial-range"
           cx={CENTER}
           cy={CENTER}
           r={(OUTER_RADIUS + INNER_RADIUS) / 2}
           fill="none"
           stroke={DIAL_BACKGROUND_COLOR[dial]}
           strokeWidth={OUTER_RADIUS - INNER_RADIUS}
-          opacity={0.18}
+          opacity={0.55}
         />
       ) : (
         <path
-          data-testid="dial-background"
+          data-testid="dial-range"
           d={buildArcPath(CENTER, CENTER, INNER_RADIUS, OUTER_RADIUS, usedStartAngle, usedEndAngle)}
           fill={DIAL_BACKGROUND_COLOR[dial]}
-          opacity={0.18}
+          opacity={0.55}
         />
       )}
       {hours.map((hour) => {
