@@ -39,6 +39,31 @@ describe('SegmentPopup', () => {
     expect(handleCancel).toHaveBeenCalled();
   });
 
+  test('calls onCancel when clicking outside the popup', async () => {
+    const user = userEvent.setup();
+    const handleCancel = vi.fn();
+    render(
+      <div>
+        <div data-testid="outside">Rest of the page</div>
+        <SegmentPopup x={0} y={0} onSubmit={() => {}} onCancel={handleCancel} />
+      </div>
+    );
+
+    await user.click(screen.getByTestId('outside'));
+
+    expect(handleCancel).toHaveBeenCalled();
+  });
+
+  test('does not call onCancel when clicking inside the popup', async () => {
+    const user = userEvent.setup();
+    const handleCancel = vi.fn();
+    render(<SegmentPopup x={0} y={0} onSubmit={() => {}} onCancel={handleCancel} />);
+
+    await user.click(screen.getByPlaceholderText("What's planned?"));
+
+    expect(handleCancel).not.toHaveBeenCalled();
+  });
+
   test('pre-fills the label in edit mode and shows delete', () => {
     render(
       <SegmentPopup

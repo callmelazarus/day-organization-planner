@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FormEvent, ReactElement } from 'react';
 
 export interface SegmentPopupProps {
@@ -19,6 +19,17 @@ export function SegmentPopup({
   onCancel,
 }: SegmentPopupProps): ReactElement {
   const [label, setLabel] = useState(initialLabel);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    function handlePointerDown(event: PointerEvent): void {
+      if (formRef.current && !formRef.current.contains(event.target as Node)) {
+        onCancel();
+      }
+    }
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [onCancel]);
 
   function handleSubmit(event: FormEvent): void {
     event.preventDefault();
@@ -29,6 +40,7 @@ export function SegmentPopup({
 
   return (
     <form
+      ref={formRef}
       onSubmit={handleSubmit}
       style={{
         position: 'fixed',
