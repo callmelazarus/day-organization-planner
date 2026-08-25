@@ -1,4 +1,5 @@
 import type { MouseEvent, ReactElement } from 'react';
+import { DIAL_OUTLINE_COLOR } from './dialColor';
 import { buildArcPath, hourToAngle } from './geometry';
 import type { DialType, Segment } from './types';
 
@@ -73,6 +74,8 @@ export function SegmentArc({
       <path
         d={path}
         fill={segment.fill}
+        stroke={DIAL_OUTLINE_COLOR[dial]}
+        strokeWidth={2}
         opacity={0.9}
         onClick={(event) => onClick(segment, event)}
         role="button"

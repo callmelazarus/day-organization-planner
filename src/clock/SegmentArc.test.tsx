@@ -1,6 +1,7 @@
 import { describe, expect, test, vi, afterEach } from 'vitest';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { SegmentArc } from './SegmentArc';
+import { DIAL_OUTLINE_COLOR } from './dialColor';
 import type { Segment } from './types';
 
 const segment: Segment = {
@@ -33,6 +34,44 @@ describe('SegmentArc', () => {
 
     const path = screen.getByRole('button', { name: 'Gym' });
     expect(path).toHaveAttribute('fill', 'hsl(180, 70%, 85%)');
+  });
+
+  test('renders a dark orange outline for a daytime segment', () => {
+    render(
+      <svg>
+        <SegmentArc
+          segment={segment}
+          dial="daytime"
+          cx={200}
+          cy={200}
+          innerRadius={60}
+          outerRadius={150}
+          onClick={() => {}}
+        />
+      </svg>
+    );
+
+    const path = screen.getByRole('button', { name: 'Gym' });
+    expect(path).toHaveAttribute('stroke', DIAL_OUTLINE_COLOR.daytime);
+  });
+
+  test('renders a dark purple outline for a nighttime segment', () => {
+    render(
+      <svg>
+        <SegmentArc
+          segment={segment}
+          dial="nighttime"
+          cx={200}
+          cy={200}
+          innerRadius={60}
+          outerRadius={150}
+          onClick={() => {}}
+        />
+      </svg>
+    );
+
+    const path = screen.getByRole('button', { name: 'Gym' });
+    expect(path).toHaveAttribute('stroke', DIAL_OUTLINE_COLOR.nighttime);
   });
 
   test('calls onClick with the segment when clicked', () => {

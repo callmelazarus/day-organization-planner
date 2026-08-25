@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import type { MouseEvent, PointerEvent as ReactPointerEvent, ReactElement } from 'react';
 import { angleToHour, buildArcPath, hourToAngle } from './geometry';
 import { computeDragPreview } from './dragPreview';
+import { DIAL_ACCENT_COLOR } from './dialColor';
 import { hourLabel } from './hourLabel';
 import { SegmentArc } from './SegmentArc';
 import type { DialType, Segment } from './types';
@@ -14,11 +15,6 @@ const PREVIEW_COLOR = '#7aa2e3';
 
 const DAYTIME_HOURS = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
 const NIGHTTIME_HOURS = [18, 19, 20, 21, 22, 23, 24];
-
-const DIAL_BACKGROUND_COLOR: Record<DialType, string> = {
-  daytime: '#f5b942',
-  nighttime: '#6c63ff',
-};
 
 const DIAL_BASE_COLOR = '#2e2e2e';
 
@@ -127,7 +123,7 @@ export function ClockDial({
           cy={CENTER}
           r={(OUTER_RADIUS + INNER_RADIUS) / 2}
           fill="none"
-          stroke={DIAL_BACKGROUND_COLOR[dial]}
+          stroke={DIAL_ACCENT_COLOR[dial]}
           strokeWidth={OUTER_RADIUS - INNER_RADIUS}
           opacity={0.55}
         />
@@ -135,7 +131,7 @@ export function ClockDial({
         <path
           data-testid="dial-range"
           d={buildArcPath(CENTER, CENTER, INNER_RADIUS, OUTER_RADIUS, usedStartAngle, usedEndAngle)}
-          fill={DIAL_BACKGROUND_COLOR[dial]}
+          fill={DIAL_ACCENT_COLOR[dial]}
           opacity={0.55}
         />
       )}
