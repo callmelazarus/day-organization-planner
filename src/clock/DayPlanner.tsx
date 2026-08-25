@@ -9,8 +9,8 @@ import { useSegments } from './useSegments';
 import { useTodos } from './useTodos';
 import type { Segment } from './types';
 
-const AM_LABEL = '☀️ AM';
-const PM_LABEL = '🌙 PM';
+const DAYTIME_LABEL = '☀️ Day';
+const NIGHTTIME_LABEL = '🌙 Night';
 
 interface Anchor {
   x: number;
@@ -36,15 +36,17 @@ export function DayPlanner(): ReactElement {
   const [isTaskListOpen, setIsTaskListOpen] = useState(false);
   const dialsRowRef = useRef<HTMLDivElement>(null);
 
-  const morningSegments = segments.filter((segment) => segment.startHour < 12);
-  const eveningSegments = segments.filter((segment) => segment.startHour >= 12);
+  const daytimeSegments = segments.filter(
+    (segment) => segment.startHour >= 7 && segment.startHour < 18
+  );
+  const nighttimeSegments = segments.filter((segment) => segment.startHour >= 18);
 
-  const morningPendingRange =
-    pendingCreate && pendingCreate.startHour < 12
+  const daytimePendingRange =
+    pendingCreate && pendingCreate.startHour >= 7 && pendingCreate.startHour < 18
       ? { startHour: pendingCreate.startHour, endHour: pendingCreate.endHour }
       : null;
-  const eveningPendingRange =
-    pendingCreate && pendingCreate.startHour >= 12
+  const nighttimePendingRange =
+    pendingCreate && pendingCreate.startHour >= 18
       ? { startHour: pendingCreate.startHour, endHour: pendingCreate.endHour }
       : null;
 
@@ -67,7 +69,7 @@ export function DayPlanner(): ReactElement {
   function handleDownload(): void {
     const svgs = dialsRowRef.current?.querySelectorAll('svg');
     if (!svgs || svgs.length < 2) return;
-    downloadDialsSnapshot(Array.from(svgs), [AM_LABEL, PM_LABEL]);
+    downloadDialsSnapshot(Array.from(svgs), [DAYTIME_LABEL, NIGHTTIME_LABEL]);
   }
 
   return (
@@ -75,23 +77,23 @@ export function DayPlanner(): ReactElement {
       <div ref={dialsRowRef} style={{ display: 'flex', gap: 40, justifyContent: 'center' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
           <ClockDial
-            dial="morning"
-            segments={morningSegments}
+            dial="daytime"
+            segments={daytimeSegments}
             onSegmentClick={handleSegmentClick}
             onCreateSegment={handleCreateSegment}
-            pendingRange={morningPendingRange}
+            pendingRange={daytimePendingRange}
           />
-          <span style={{ fontSize: 20 }}>{AM_LABEL}</span>
+          <span style={{ fontSize: 20 }}>{DAYTIME_LABEL}</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
           <ClockDial
-            dial="evening"
-            segments={eveningSegments}
+            dial="nighttime"
+            segments={nighttimeSegments}
             onSegmentClick={handleSegmentClick}
             onCreateSegment={handleCreateSegment}
-            pendingRange={eveningPendingRange}
+            pendingRange={nighttimePendingRange}
           />
-          <span style={{ fontSize: 20 }}>{PM_LABEL}</span>
+          <span style={{ fontSize: 20 }}>{NIGHTTIME_LABEL}</span>
         </div>
       </div>
 

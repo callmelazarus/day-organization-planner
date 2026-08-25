@@ -17,21 +17,22 @@ describe('DayPlanner', () => {
     cleanup();
   });
 
-  test('renders both the morning and evening dials', () => {
+  test('renders both the daytime and nighttime dials', () => {
     render(<DayPlanner />);
 
+    // '12' is duplicated: once for noon (daytime dial) and once for
+    // midnight (nighttime dial).
     expect(screen.getAllByText('12').length).toBeGreaterThanOrEqual(2);
-    // '6' is legitimately duplicated by design: the morning dial shows it at
-    // 6am and the evening dial independently shows it at 6pm (same reason
-    // '12' above is duplicated between noon and the wrap to midnight).
+    // '6' is duplicated: both dials share the 6pm boundary (daytime ends
+    // at 6pm, nighttime starts at 6pm).
     expect(screen.getAllByText('6').length).toBeGreaterThanOrEqual(2);
   });
 
-  test('labels the dials with a sun emoji for AM and a moon emoji for PM', () => {
+  test('labels the dials with a sun emoji for Day and a moon emoji for Night', () => {
     render(<DayPlanner />);
 
-    expect(screen.getByText('☀️ AM')).toBeInTheDocument();
-    expect(screen.getByText('🌙 PM')).toBeInTheDocument();
+    expect(screen.getByText('☀️ Day')).toBeInTheDocument();
+    expect(screen.getByText('🌙 Night')).toBeInTheDocument();
   });
 
   test('renders a persisted segment on the correct dial', () => {
@@ -40,8 +41,8 @@ describe('DayPlanner', () => {
       JSON.stringify([
         {
           id: '1',
-          startHour: 6,
-          endHour: 7,
+          startHour: 8,
+          endHour: 9,
           label: 'Gym',
           fill: 'hsl(0, 70%, 85%)',
           textColor: 'hsl(0, 70%, 30%)',
@@ -60,16 +61,16 @@ describe('DayPlanner', () => {
       JSON.stringify([
         {
           id: '1',
-          startHour: 6,
-          endHour: 7,
+          startHour: 8,
+          endHour: 9,
           label: 'Gym',
           fill: 'hsl(0, 70%, 85%)',
           textColor: 'hsl(0, 70%, 30%)',
         },
         {
           id: '2',
-          startHour: 8,
-          endHour: 9,
+          startHour: 10,
+          endHour: 11,
           label: 'Breakfast',
           fill: 'hsl(40, 70%, 85%)',
           textColor: 'hsl(40, 70%, 30%)',
@@ -93,8 +94,8 @@ describe('DayPlanner', () => {
       JSON.stringify([
         {
           id: '1',
-          startHour: 6,
-          endHour: 7,
+          startHour: 8,
+          endHour: 9,
           label: 'Gym',
           fill: 'hsl(0, 70%, 85%)',
           textColor: 'hsl(0, 70%, 30%)',
@@ -108,7 +109,7 @@ describe('DayPlanner', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'View all tasks' }));
     expect(screen.getByRole('dialog', { name: 'All tasks' })).toBeInTheDocument();
-    expect(screen.getByText('6am – 7am')).toBeInTheDocument();
+    expect(screen.getByText('8am – 9am')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'Close' }));
     expect(screen.queryByRole('dialog', { name: 'All tasks' })).not.toBeInTheDocument();
@@ -120,8 +121,8 @@ describe('DayPlanner', () => {
       JSON.stringify([
         {
           id: '1',
-          startHour: 6,
-          endHour: 7,
+          startHour: 8,
+          endHour: 9,
           label: 'Gym',
           fill: 'hsl(0, 70%, 85%)',
           textColor: 'hsl(0, 70%, 30%)',
@@ -145,8 +146,8 @@ describe('DayPlanner', () => {
       JSON.stringify([
         {
           id: '1',
-          startHour: 6,
-          endHour: 7,
+          startHour: 8,
+          endHour: 9,
           label: 'Gym',
           fill: 'hsl(0, 70%, 85%)',
           textColor: 'hsl(0, 70%, 30%)',
@@ -172,7 +173,7 @@ describe('DayPlanner', () => {
     expect(svgs).toHaveLength(2);
     expect(svgs[0].tagName.toLowerCase()).toBe('svg');
     expect(svgs[1].tagName.toLowerCase()).toBe('svg');
-    expect(labels).toEqual(['☀️ AM', '🌙 PM']);
+    expect(labels).toEqual(['☀️ Day', '🌙 Night']);
   });
 
   test('the todo list is always visible without needing a button to open it', () => {

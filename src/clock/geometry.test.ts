@@ -2,47 +2,43 @@ import { describe, expect, test } from 'vitest';
 import { angleToHour, hourToAngle, buildArcPath } from './geometry';
 
 describe('angleToHour', () => {
-  test('morning dial maps the used half correctly', () => {
-    expect(angleToHour('morning', 180)).toBe(6);
-    expect(angleToHour('morning', 270)).toBe(9);
-    expect(angleToHour('morning', 360)).toBe(12);
-    expect(angleToHour('morning', 0)).toBe(12);
+  test('nighttime dial maps the used half correctly', () => {
+    expect(angleToHour('nighttime', 180)).toBe(18);
+    expect(angleToHour('nighttime', 270)).toBe(21);
+    expect(angleToHour('nighttime', 360)).toBe(24);
+    expect(angleToHour('nighttime', 0)).toBe(24);
   });
 
-  test('morning dial returns null for the unused half', () => {
-    expect(angleToHour('morning', 90)).toBeNull();
-    expect(angleToHour('morning', 179)).toBeNull();
+  test('nighttime dial returns null for the unused half', () => {
+    expect(angleToHour('nighttime', 90)).toBeNull();
+    expect(angleToHour('nighttime', 179)).toBeNull();
   });
 
-  test('evening dial maps 12pm through 11pm', () => {
-    expect(angleToHour('evening', 0)).toBe(12);
-    expect(angleToHour('evening', 180)).toBe(18);
-    expect(angleToHour('evening', 270)).toBe(21);
-    expect(angleToHour('evening', 330)).toBe(23);
+  test('daytime dial maps 7am through 6pm, crossing the noon mark', () => {
+    expect(angleToHour('daytime', 210)).toBe(7);
+    expect(angleToHour('daytime', 360)).toBe(12);
+    expect(angleToHour('daytime', 0)).toBe(12);
+    expect(angleToHour('daytime', 90)).toBe(15);
+    expect(angleToHour('daytime', 180)).toBe(18);
   });
 
-  test('evening dial returns null for the 11pm-12am dead zone', () => {
-    expect(angleToHour('evening', 331)).toBeNull();
-    expect(angleToHour('evening', 350)).toBeNull();
-  });
-
-  test('the 0deg/360deg seam resolves to 12, the dial start (not the removed 12am hour)', () => {
-    expect(angleToHour('evening', 360)).toBe(12);
-    expect(angleToHour('evening', 0)).toBe(12);
+  test('daytime dial returns null for the 6am-7am dead zone', () => {
+    expect(angleToHour('daytime', 181)).toBeNull();
+    expect(angleToHour('daytime', 209)).toBeNull();
   });
 });
 
 describe('hourToAngle', () => {
-  test('morning dial', () => {
-    expect(hourToAngle('morning', 6)).toBe(180);
-    expect(hourToAngle('morning', 9)).toBe(270);
-    expect(hourToAngle('morning', 12)).toBe(360);
+  test('nighttime dial', () => {
+    expect(hourToAngle('nighttime', 18)).toBe(180);
+    expect(hourToAngle('nighttime', 21)).toBe(270);
+    expect(hourToAngle('nighttime', 24)).toBe(360);
   });
 
-  test('evening dial', () => {
-    expect(hourToAngle('evening', 12)).toBe(0);
-    expect(hourToAngle('evening', 18)).toBe(180);
-    expect(hourToAngle('evening', 24)).toBe(360);
+  test('daytime dial', () => {
+    expect(hourToAngle('daytime', 7)).toBe(210);
+    expect(hourToAngle('daytime', 12)).toBe(360);
+    expect(hourToAngle('daytime', 18)).toBe(540);
   });
 });
 

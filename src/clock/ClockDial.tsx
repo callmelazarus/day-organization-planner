@@ -12,12 +12,12 @@ const OUTER_RADIUS = 150;
 const INNER_RADIUS = 60;
 const PREVIEW_COLOR = '#7aa2e3';
 
-const MORNING_HOURS = [6, 7, 8, 9, 10, 11, 12];
-const EVENING_HOURS = [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
+const DAYTIME_HOURS = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
+const NIGHTTIME_HOURS = [18, 19, 20, 21, 22, 23, 24];
 
 const DIAL_BACKGROUND_COLOR: Record<DialType, string> = {
-  morning: '#f5b942',
-  evening: '#6c63ff',
+  daytime: '#f5b942',
+  nighttime: '#6c63ff',
 };
 
 function pointerAngle(cx: number, cy: number, x: number, y: number): number {
@@ -45,7 +45,7 @@ export function ClockDial({
   const [dragStartHour, setDragStartHour] = useState<number | null>(null);
   const [dragCurrentHour, setDragCurrentHour] = useState<number | null>(null);
 
-  const hours = dial === 'morning' ? MORNING_HOURS : EVENING_HOURS;
+  const hours = dial === 'daytime' ? DAYTIME_HOURS : NIGHTTIME_HOURS;
   const usedStartAngle = hourToAngle(dial, hours[0]);
   const usedEndAngle = hourToAngle(dial, hours[hours.length - 1]);
   const isFullCircle = usedEndAngle - usedStartAngle >= 360;

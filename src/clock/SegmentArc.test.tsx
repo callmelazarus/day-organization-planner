@@ -5,8 +5,8 @@ import type { Segment } from './types';
 
 const segment: Segment = {
   id: '1',
-  startHour: 6,
-  endHour: 7,
+  startHour: 8,
+  endHour: 9,
   label: 'Gym',
   fill: 'hsl(180, 70%, 85%)',
   textColor: 'hsl(180, 70%, 30%)',
@@ -21,7 +21,7 @@ describe('SegmentArc', () => {
       <svg>
         <SegmentArc
           segment={segment}
-          dial="morning"
+          dial="daytime"
           cx={200}
           cy={200}
           innerRadius={60}
@@ -41,7 +41,7 @@ describe('SegmentArc', () => {
       <svg>
         <SegmentArc
           segment={segment}
-          dial="morning"
+          dial="daytime"
           cx={200}
           cy={200}
           innerRadius={60}
@@ -55,11 +55,11 @@ describe('SegmentArc', () => {
     expect(handleClick).toHaveBeenCalledWith(segment, expect.anything());
   });
 
-  test('renders a full-circle (12-hour) evening segment as a clickable stroked circle', () => {
+  test('renders a full-circle (12-hour) segment as a clickable stroked circle', () => {
     const fullDaySegment: Segment = {
       id: '2',
-      startHour: 12,
-      endHour: 24,
+      startHour: 7,
+      endHour: 19,
       label: 'Sleep',
       fill: 'hsl(220, 70%, 85%)',
       textColor: 'hsl(220, 70%, 30%)',
@@ -70,7 +70,7 @@ describe('SegmentArc', () => {
       <svg>
         <SegmentArc
           segment={fullDaySegment}
-          dial="evening"
+          dial="daytime"
           cx={200}
           cy={200}
           innerRadius={60}
@@ -91,7 +91,7 @@ describe('SegmentArc', () => {
       <svg>
         <SegmentArc
           segment={segment}
-          dial="morning"
+          dial="daytime"
           cx={200}
           cy={200}
           innerRadius={60}
@@ -110,8 +110,8 @@ describe('SegmentArc', () => {
   test('renders the label as visible text for a full-circle segment too', () => {
     const fullDaySegment: Segment = {
       id: '2',
-      startHour: 12,
-      endHour: 24,
+      startHour: 7,
+      endHour: 19,
       label: 'Sleep',
       fill: 'hsl(220, 70%, 85%)',
       textColor: 'hsl(220, 70%, 30%)',
@@ -121,7 +121,7 @@ describe('SegmentArc', () => {
       <svg>
         <SegmentArc
           segment={fullDaySegment}
-          dial="evening"
+          dial="daytime"
           cx={200}
           cy={200}
           innerRadius={60}

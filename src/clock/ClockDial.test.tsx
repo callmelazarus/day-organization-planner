@@ -1,12 +1,26 @@
-import { describe, expect, test, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, expect, test, vi, afterEach } from 'vitest';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { ClockDial } from './ClockDial';
 import type { Segment } from './types';
 
 describe('ClockDial', () => {
-  test('renders standard clock hour labels for the morning dial', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  test('renders hour labels for the daytime dial (7am-6pm)', () => {
     render(
-      <ClockDial dial="morning" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+      <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+    );
+
+    ['7', '8', '9', '10', '11', '12', '1', '2', '3', '4', '5', '6'].forEach((label) => {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    });
+  });
+
+  test('renders hour labels for the nighttime dial (6pm-12am)', () => {
+    render(
+      <ClockDial dial="nighttime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
     );
 
     ['6', '7', '8', '9', '10', '11', '12'].forEach((label) => {
@@ -14,21 +28,11 @@ describe('ClockDial', () => {
     });
   });
 
-  test('renders all 12 hour labels for the evening dial', () => {
-    render(
-      <ClockDial dial="evening" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
-    );
-
-    ['12', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11'].forEach((label) => {
-      expect(screen.getAllByText(label).length).toBeGreaterThan(0);
-    });
-  });
-
   test('renders a clickable arc for each segment and forwards clicks', () => {
     const segment: Segment = {
       id: '1',
-      startHour: 6,
-      endHour: 7,
+      startHour: 8,
+      endHour: 9,
       label: 'Gym',
       fill: 'hsl(0, 70%, 85%)',
       textColor: 'hsl(0, 70%, 30%)',
@@ -37,7 +41,7 @@ describe('ClockDial', () => {
 
     render(
       <ClockDial
-        dial="morning"
+        dial="daytime"
         segments={[segment]}
         onSegmentClick={handleClick}
         onCreateSegment={() => {}}
@@ -48,21 +52,25 @@ describe('ClockDial', () => {
     expect(handleClick).toHaveBeenCalledWith(segment, expect.anything());
   });
 
-  test('renders an arc path background for both the evening and morning dials (neither is a full circle)', () => {
-    const { container: eveningContainer } = render(
-      <ClockDial dial="evening" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+  test('renders an arc path background for both dials (neither is a full circle)', () => {
+    const { container: nighttimeContainer } = render(
+      <ClockDial dial="nighttime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
     );
-    expect(eveningContainer.querySelector('[data-testid="dial-background"]')?.tagName).toBe('path');
+    expect(nighttimeContainer.querySelector('[data-testid="dial-background"]')?.tagName).toBe(
+      'path'
+    );
 
-    const { container: morningContainer } = render(
-      <ClockDial dial="morning" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+    const { container: daytimeContainer } = render(
+      <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
     );
-    expect(morningContainer.querySelector('[data-testid="dial-background"]')?.tagName).toBe('path');
+    expect(daytimeContainer.querySelector('[data-testid="dial-background"]')?.tagName).toBe(
+      'path'
+    );
   });
 
   test('renders no drag preview before any pointer interaction', () => {
     const { container } = render(
-      <ClockDial dial="morning" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+      <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
     );
 
     expect(container.querySelector('[data-testid="drag-preview"]')).not.toBeInTheDocument();
@@ -72,21 +80,21 @@ describe('ClockDial', () => {
   test('renders a frozen preview from pendingRange when no drag is in progress', () => {
     const { container } = render(
       <ClockDial
-        dial="morning"
+        dial="daytime"
         segments={[]}
         onSegmentClick={() => {}}
         onCreateSegment={() => {}}
-        pendingRange={{ startHour: 6, endHour: 7 }}
+        pendingRange={{ startHour: 7, endHour: 8 }}
       />
     );
 
     expect(container.querySelector('[data-testid="drag-preview"]')).toBeInTheDocument();
-    expect(screen.getByText('6am – 7am')).toBeInTheDocument();
+    expect(screen.getByText('7am – 8am')).toBeInTheDocument();
   });
 
-  test('renders the morning dial background in a soft orange/yellow', () => {
+  test('renders the daytime dial background in a soft orange/yellow', () => {
     const { container } = render(
-      <ClockDial dial="morning" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+      <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
     );
 
     expect(container.querySelector('[data-testid="dial-background"]')).toHaveAttribute(
@@ -95,9 +103,9 @@ describe('ClockDial', () => {
     );
   });
 
-  test('renders the evening dial background in a soft purple/blue', () => {
+  test('renders the nighttime dial background in a soft purple/blue', () => {
     const { container } = render(
-      <ClockDial dial="evening" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+      <ClockDial dial="nighttime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
     );
 
     expect(container.querySelector('[data-testid="dial-background"]')).toHaveAttribute(

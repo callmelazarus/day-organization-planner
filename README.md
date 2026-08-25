@@ -12,8 +12,8 @@ Most useful for weekends, but works for any day.
 
 The day is split into two clock dials:
 
-- **AM dial** — 6:00 to 12:00
-- **PM dial** — 12:00 to 11:00 PM
+- **Day dial** — 7:00 AM to 6:00 PM
+- **Night dial** — 6:00 PM to 12:00 AM
 
 To plan a segment, click and drag across the dial between the start and end
 hour you want; the dial snaps to whole hours and shows a live preview of the
@@ -28,7 +28,7 @@ Click an existing segment to reopen its popup, where you can edit the label
 or delete the segment entirely.
 
 A **"View all tasks"** button opens a modal listing every segment for the day
-in chronological order, independent of which dial (AM/PM) it's on.
+in chronological order, independent of which dial it's on.
 
 A **"Download image"** button exports a snapshot of just the two dials as a
 PNG file, named `day-planner-YYYY-MM-DD.png`.

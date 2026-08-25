@@ -3,21 +3,24 @@ import type { DialType } from './types';
 export function angleToHour(dial: DialType, angleDeg: number): number | null {
   const normalized = ((angleDeg % 360) + 360) % 360;
 
-  if (dial === 'morning') {
+  if (dial === 'nighttime') {
     const effective = normalized === 0 ? 360 : normalized;
     if (effective < 180) return null;
-    return 6 + (effective - 180) / 30;
+    return 18 + (effective - 180) / 30;
   }
 
-  if (normalized > 330) return null;
-  return 12 + normalized / 30;
+  // daytime: spans 7am-6pm, crossing the noon (0deg/360deg) mark partway
+  // through. The (180, 210) gap is the unused 6am-7am hour.
+  if (normalized >= 210) return 7 + (normalized - 210) / 30;
+  if (normalized <= 180) return 7 + (normalized + 150) / 30;
+  return null;
 }
 
 export function hourToAngle(dial: DialType, hour: number): number {
-  if (dial === 'morning') {
-    return 180 + (hour - 6) * 30;
+  if (dial === 'nighttime') {
+    return 180 + (hour - 18) * 30;
   }
-  return (hour - 12) * 30;
+  return 210 + (hour - 7) * 30;
 }
 
 function round(value: number): number {

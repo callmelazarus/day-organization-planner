@@ -4,47 +4,48 @@ import { buildArcPath, hourToAngle } from './geometry';
 
 describe('computeDragPreview', () => {
   test('returns null when either hour is missing (no drag in progress)', () => {
-    expect(computeDragPreview('morning', null, 7, 200, 200, 60, 150)).toBeNull();
-    expect(computeDragPreview('morning', 6, null, 200, 200, 60, 150)).toBeNull();
+    expect(computeDragPreview('daytime', null, 8, 200, 200, 60, 150)).toBeNull();
+    expect(computeDragPreview('daytime', 7, null, 200, 200, 60, 150)).toBeNull();
   });
 
   test('returns null when start and current hour are the same (no movement yet)', () => {
-    expect(computeDragPreview('morning', 8, 8, 200, 200, 60, 150)).toBeNull();
+    expect(computeDragPreview('daytime', 8, 8, 200, 200, 60, 150)).toBeNull();
   });
 
   test('normalizes direction so dragging backward produces the same preview as dragging forward', () => {
-    const forward = computeDragPreview('morning', 6, 7, 200, 200, 60, 150);
-    const backward = computeDragPreview('morning', 7, 6, 200, 200, 60, 150);
+    const forward = computeDragPreview('daytime', 7, 8, 200, 200, 60, 150);
+    const backward = computeDragPreview('daytime', 8, 7, 200, 200, 60, 150);
     expect(backward).toEqual(forward);
   });
 
-  test('builds an arc path and label for a partial morning range', () => {
-    const preview = computeDragPreview('morning', 6, 7, 200, 200, 60, 150);
+  test('builds an arc path and label for a partial daytime range', () => {
+    const preview = computeDragPreview('daytime', 7, 8, 200, 200, 60, 150);
     const expectedPath = buildArcPath(
       200,
       200,
       60,
       150,
-      hourToAngle('morning', 6),
-      hourToAngle('morning', 7)
+      hourToAngle('daytime', 7),
+      hourToAngle('daytime', 8)
     );
 
     expect(preview?.isFullCircle).toBe(false);
     expect(preview?.arcPath).toBe(expectedPath);
-    expect(preview?.labelText).toBe('6am – 7am');
+    expect(preview?.labelText).toBe('7am – 8am');
   });
 
-  test('flags a full-circle preview for the entire evening dial and formats midnight', () => {
-    const preview = computeDragPreview('evening', 12, 24, 200, 200, 60, 150);
+  test('flags a full-circle preview when the span reaches 360deg', () => {
+    // No real dial's hour range spans a full 24/12 hours anymore, but the
+    // full-circle detection itself is generic and stays covered here.
+    const preview = computeDragPreview('daytime', 7, 19, 200, 200, 60, 150);
 
     expect(preview?.isFullCircle).toBe(true);
     expect(preview?.arcPath).toBe('');
-    expect(preview?.labelText).toBe('12pm – 12am');
   });
 
   test('computes the angular midpoint of the range', () => {
-    const preview = computeDragPreview('morning', 6, 8, 200, 200, 60, 150);
-    // hourToAngle('morning', 6) = 180, hourToAngle('morning', 8) = 240
-    expect(preview?.midAngle).toBe(210);
+    const preview = computeDragPreview('daytime', 7, 9, 200, 200, 60, 150);
+    // hourToAngle('daytime', 7) = 210, hourToAngle('daytime', 9) = 270
+    expect(preview?.midAngle).toBe(240);
   });
 });

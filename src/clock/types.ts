@@ -1,4 +1,4 @@
-export type DialType = 'morning' | 'evening';
+export type DialType = 'daytime' | 'nighttime';
 
 export interface Segment {
   id: string;
