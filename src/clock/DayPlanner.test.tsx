@@ -1,5 +1,5 @@
 import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, within } from '@testing-library/react';
 import { DayPlanner } from './DayPlanner';
 import * as exportSnapshot from './exportSnapshot';
 
@@ -115,7 +115,7 @@ describe('DayPlanner', () => {
     expect(screen.queryByRole('dialog', { name: 'All tasks' })).not.toBeInTheDocument();
   });
 
-  test('the Clear button removes all segments after confirming', () => {
+  test('the Clear button opens a confirmation dialog, and confirming removes all segments', () => {
     localStorage.setItem(
       'circular-clock-mvp:segments',
       JSON.stringify([
@@ -129,18 +129,22 @@ describe('DayPlanner', () => {
         },
       ])
     );
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
 
     render(<DayPlanner />);
 
     expect(screen.getByRole('button', { name: 'Gym' })).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Clear' }));
 
-    expect(window.confirm).toHaveBeenCalledWith('Clear all tasks?');
+    const dialog = screen.getByRole('dialog', { name: 'Clear all tasks?' });
+    expect(dialog).toBeInTheDocument();
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Clear' }));
+
+    expect(screen.queryByRole('dialog', { name: 'Clear all tasks?' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Gym' })).not.toBeInTheDocument();
   });
 
-  test('the Clear button does nothing if the confirmation is declined', () => {
+  test('the Clear button does nothing if the confirmation is cancelled', () => {
     localStorage.setItem(
       'circular-clock-mvp:segments',
       JSON.stringify([
@@ -154,12 +158,13 @@ describe('DayPlanner', () => {
         },
       ])
     );
-    vi.spyOn(window, 'confirm').mockReturnValue(false);
 
     render(<DayPlanner />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Clear' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
 
+    expect(screen.queryByRole('dialog', { name: 'Clear all tasks?' })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Gym' })).toBeInTheDocument();
   });
 

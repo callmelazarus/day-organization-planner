@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import type { MouseEvent, ReactElement } from 'react';
 import { ClockDial } from './ClockDial';
+import { ConfirmModal } from './ConfirmModal';
 import { SegmentPopup } from './SegmentPopup';
 import { TaskListModal } from './TaskListModal';
 import { TodoList } from './TodoList';
@@ -34,6 +35,7 @@ export function DayPlanner(): ReactElement {
   const [pendingCreate, setPendingCreate] = useState<PendingCreate | null>(null);
   const [pendingEdit, setPendingEdit] = useState<PendingEdit | null>(null);
   const [isTaskListOpen, setIsTaskListOpen] = useState(false);
+  const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
   const dialsRowRef = useRef<HTMLDivElement>(null);
 
   const daytimeSegments = segments.filter(
@@ -61,9 +63,7 @@ export function DayPlanner(): ReactElement {
   }
 
   function handleClear(): void {
-    if (window.confirm('Clear all tasks?')) {
-      clearSegments();
-    }
+    setIsClearConfirmOpen(true);
   }
 
   function handleDownload(): void {
@@ -113,6 +113,18 @@ export function DayPlanner(): ReactElement {
 
       {isTaskListOpen && (
         <TaskListModal segments={segments} onClose={() => setIsTaskListOpen(false)} />
+      )}
+
+      {isClearConfirmOpen && (
+        <ConfirmModal
+          message="Clear all tasks?"
+          confirmLabel="Clear"
+          onConfirm={() => {
+            clearSegments();
+            setIsClearConfirmOpen(false);
+          }}
+          onCancel={() => setIsClearConfirmOpen(false)}
+        />
       )}
 
       {pendingCreate && (
