@@ -67,7 +67,7 @@ export function ConfirmModal({
         }}
       >
         <p style={{ margin: 0 }}>{message}</p>
-        <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
+        <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
           <button
             type="button"
             onClick={onCancel}
