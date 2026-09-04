@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { FormEvent, ReactElement } from 'react';
+import { ConfirmModal } from './ConfirmModal';
 import type { Todo } from './types';
 
 export interface TodoListProps {
@@ -8,6 +9,7 @@ export interface TodoListProps {
   onDelete: (id: string) => void;
   onToggleStar: (id: string) => void;
   onMoveUp: (id: string) => void;
+  onClearAll: () => void;
 }
 
 export function TodoList({
@@ -16,8 +18,10 @@ export function TodoList({
   onDelete,
   onToggleStar,
   onMoveUp,
+  onClearAll,
 }: TodoListProps): ReactElement {
   const [text, setText] = useState('');
+  const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
 
   const orderedTodos = [...todos].sort((a, b) => Number(b.starred) - Number(a.starred));
 
@@ -60,6 +64,20 @@ export function TodoList({
         />
         <button type="submit" style={{ backgroundColor: '#2f6b40', color: '#dff2e4' }}>
           Add
+        </button>
+        <button
+          type="button"
+          onClick={() => setIsClearConfirmOpen(true)}
+          disabled={todos.length === 0}
+          aria-label="Clear all tasks"
+          style={{
+            backgroundColor: '#8a3a3a',
+            color: '#f5d9d9',
+            opacity: todos.length === 0 ? 0.4 : 1,
+            cursor: todos.length === 0 ? 'not-allowed' : 'pointer',
+          }}
+        >
+          🗑️
         </button>
       </form>
 
@@ -115,6 +133,18 @@ export function TodoList({
             );
           })}
         </ul>
+      )}
+
+      {isClearConfirmOpen && (
+        <ConfirmModal
+          message="Clear all todos?"
+          confirmLabel="Clear"
+          onConfirm={() => {
+            onClearAll();
+            setIsClearConfirmOpen(false);
+          }}
+          onCancel={() => setIsClearConfirmOpen(false)}
+        />
       )}
     </div>
   );

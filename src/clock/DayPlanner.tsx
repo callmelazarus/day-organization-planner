@@ -31,7 +31,7 @@ interface PendingEdit {
 
 export function DayPlanner(): ReactElement {
   const { segments, addSegment, updateSegment, deleteSegment, clearSegments } = useSegments();
-  const { todos, addTodo, deleteTodo, toggleStar, moveTodoUp } = useTodos();
+  const { todos, addTodo, deleteTodo, toggleStar, moveTodoUp, clearTodos } = useTodos();
   const [pendingCreate, setPendingCreate] = useState<PendingCreate | null>(null);
   const [pendingEdit, setPendingEdit] = useState<PendingEdit | null>(null);
   const [isTaskListOpen, setIsTaskListOpen] = useState(false);
@@ -115,6 +115,7 @@ export function DayPlanner(): ReactElement {
         onDelete={deleteTodo}
         onToggleStar={toggleStar}
         onMoveUp={moveTodoUp}
+        onClearAll={clearTodos}
       />
 
       {isTaskListOpen && (

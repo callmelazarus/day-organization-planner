@@ -189,4 +189,19 @@ describe('useTodos', () => {
     ]);
     expect(result.current.todos.find((todo) => todo.id === firstId)?.starred).toBe(false);
   });
+
+  test('clearTodos removes all todos', () => {
+    const { result } = renderHook(() => useTodos());
+
+    act(() => {
+      result.current.addTodo('Buy groceries');
+      result.current.addTodo('Walk the dog');
+    });
+
+    act(() => {
+      result.current.clearTodos();
+    });
+
+    expect(result.current.todos).toEqual([]);
+  });
 });
