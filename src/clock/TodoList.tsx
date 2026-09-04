@@ -7,9 +7,16 @@ export interface TodoListProps {
   onAdd: (text: string) => void;
   onDelete: (id: string) => void;
   onToggleStar: (id: string) => void;
+  onMoveUp: (id: string) => void;
 }
 
-export function TodoList({ todos, onAdd, onDelete, onToggleStar }: TodoListProps): ReactElement {
+export function TodoList({
+  todos,
+  onAdd,
+  onDelete,
+  onToggleStar,
+  onMoveUp,
+}: TodoListProps): ReactElement {
   const [text, setText] = useState('');
 
   const orderedTodos = [...todos].sort((a, b) => Number(b.starred) - Number(a.starred));
@@ -60,36 +67,53 @@ export function TodoList({ todos, onAdd, onDelete, onToggleStar }: TodoListProps
         <p style={{ margin: 0, fontSize: '2rem' }}>💪</p>
       ) : (
         <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {orderedTodos.map((todo) => (
-            <li
-              key={todo.id}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                padding: '6px 10px',
-                borderRadius: 8,
-                backgroundColor: todo.starred ? '#6b5b1f' : '#4a4a4a',
-              }}
-            >
-              <button
-                type="button"
-                onClick={() => onToggleStar(todo.id)}
-                aria-label={todo.starred ? 'Unstar' : 'Star'}
-                style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.1rem' }}
+          {orderedTodos.map((todo, index) => {
+            const canMoveUp = index > 0 && orderedTodos[index - 1].starred === todo.starred;
+            return (
+              <li
+                key={todo.id}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '6px 10px',
+                  borderRadius: 8,
+                  backgroundColor: todo.starred ? '#6b5b1f' : '#4a4a4a',
+                }}
               >
-                {todo.starred ? '★' : '☆'}
-              </button>
-              <span style={{ flex: 1 }}>{todo.text}</span>
-              <button
-                type="button"
-                onClick={() => onDelete(todo.id)}
-                style={{ backgroundColor: '#8a3a3a', color: '#f5d9d9' }}
-              >
-                Delete
-              </button>
-            </li>
-          ))}
+                <button
+                  type="button"
+                  onClick={() => onToggleStar(todo.id)}
+                  aria-label={todo.starred ? 'Unstar' : 'Star'}
+                  style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer', fontSize: '1.1rem' }}
+                >
+                  {todo.starred ? '★' : '☆'}
+                </button>
+                <span style={{ flex: 1 }}>{todo.text}</span>
+                <button
+                  type="button"
+                  onClick={() => onMoveUp(todo.id)}
+                  disabled={!canMoveUp}
+                  aria-label="Move up"
+                  style={{
+                    backgroundColor: '#4a6a8a',
+                    color: '#dbe9f5',
+                    opacity: canMoveUp ? 1 : 0.4,
+                    cursor: canMoveUp ? 'pointer' : 'not-allowed',
+                  }}
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onDelete(todo.id)}
+                  style={{ backgroundColor: '#8a3a3a', color: '#f5d9d9' }}
+                >
+                  Delete
+                </button>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

@@ -124,4 +124,69 @@ describe('useTodos', () => {
     const { result } = renderHook(() => useTodos());
     expect(result.current.todos).toEqual([]);
   });
+
+  test('moveTodoUp swaps a todo with the one before it', () => {
+    const { result } = renderHook(() => useTodos());
+
+    act(() => {
+      result.current.addTodo('Buy groceries');
+      result.current.addTodo('Walk the dog');
+      result.current.addTodo('Read a book');
+    });
+    const [, secondId] = result.current.todos.map((todo) => todo.id);
+
+    act(() => {
+      result.current.moveTodoUp(secondId);
+    });
+
+    expect(result.current.todos.map((todo) => todo.text)).toEqual([
+      'Walk the dog',
+      'Buy groceries',
+      'Read a book',
+    ]);
+  });
+
+  test('moveTodoUp does nothing for the first todo', () => {
+    const { result } = renderHook(() => useTodos());
+
+    act(() => {
+      result.current.addTodo('Buy groceries');
+      result.current.addTodo('Walk the dog');
+    });
+    const [firstId] = result.current.todos.map((todo) => todo.id);
+
+    act(() => {
+      result.current.moveTodoUp(firstId);
+    });
+
+    expect(result.current.todos.map((todo) => todo.text)).toEqual([
+      'Buy groceries',
+      'Walk the dog',
+    ]);
+  });
+
+  test('moveTodoUp only swaps within the same starred group', () => {
+    const { result } = renderHook(() => useTodos());
+
+    act(() => {
+      result.current.addTodo('Buy groceries');
+      result.current.addTodo('Walk the dog');
+      result.current.addTodo('Read a book');
+    });
+    const [firstId, , thirdId] = result.current.todos.map((todo) => todo.id);
+
+    act(() => {
+      result.current.toggleStar(thirdId);
+    });
+    act(() => {
+      result.current.moveTodoUp(thirdId);
+    });
+
+    expect(result.current.todos.map((todo) => todo.text)).toEqual([
+      'Buy groceries',
+      'Walk the dog',
+      'Read a book',
+    ]);
+    expect(result.current.todos.find((todo) => todo.id === firstId)?.starred).toBe(false);
+  });
 });

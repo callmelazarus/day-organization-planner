@@ -6,6 +6,7 @@ export interface UseTodosResult {
   addTodo: (text: string) => void;
   deleteTodo: (id: string) => void;
   toggleStar: (id: string) => void;
+  moveTodoUp: (id: string) => void;
 }
 
 const STORAGE_KEY = 'circular-clock-mvp:todos';
@@ -57,5 +58,26 @@ export function useTodos(): UseTodosResult {
     );
   }
 
-  return { todos, addTodo, deleteTodo, toggleStar };
+  function moveTodoUp(id: string): void {
+    setTodos((prev) => {
+      const index = prev.findIndex((todo) => todo.id === id);
+      if (index === -1) return prev;
+
+      const target = prev[index];
+      let swapIndex = -1;
+      for (let i = index - 1; i >= 0; i -= 1) {
+        if (prev[i].starred === target.starred) {
+          swapIndex = i;
+          break;
+        }
+      }
+      if (swapIndex === -1) return prev;
+
+      const next = [...prev];
+      [next[index], next[swapIndex]] = [next[swapIndex], next[index]];
+      return next;
+    });
+  }
+
+  return { todos, addTodo, deleteTodo, toggleStar, moveTodoUp };
 }
