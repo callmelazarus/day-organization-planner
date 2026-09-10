@@ -8,6 +8,7 @@ export interface TodoListProps {
   onAdd: (text: string) => void;
   onDelete: (id: string) => void;
   onToggleStar: (id: string) => void;
+  onToggleDone: (id: string) => void;
   onMoveUp: (id: string) => void;
   onClearAll: () => void;
 }
@@ -17,13 +18,17 @@ export function TodoList({
   onAdd,
   onDelete,
   onToggleStar,
+  onToggleDone,
   onMoveUp,
   onClearAll,
 }: TodoListProps): ReactElement {
   const [text, setText] = useState('');
   const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
 
-  const orderedTodos = [...todos].sort((a, b) => Number(b.starred) - Number(a.starred));
+  const orderedTodos = [...todos].sort((a, b) => {
+    if (a.done !== b.done) return Number(a.done) - Number(b.done);
+    return Number(b.starred) - Number(a.starred);
+  });
 
   function handleSubmit(event: FormEvent): void {
     event.preventDefault();
@@ -107,7 +112,21 @@ export function TodoList({
                 >
                   {todo.starred ? '★' : '☆'}
                 </button>
-                <span style={{ flex: 1 }}>{todo.text}</span>
+                <span
+                  style={{
+                    flex: 1,
+                    textDecoration: todo.done ? 'line-through' : 'none',
+                  }}
+                >
+                  {todo.text}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => onToggleDone(todo.id)}
+                  style={{ backgroundColor: '#2f5fa8', color: '#dbe6f7' }}
+                >
+                  Done
+                </button>
                 <button
                   type="button"
                   onClick={() => onMoveUp(todo.id)}

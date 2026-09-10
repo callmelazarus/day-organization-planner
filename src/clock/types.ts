@@ -13,4 +13,5 @@ export interface Todo {
   id: string;
   text: string;
   starred: boolean;
+  done: boolean;
 }

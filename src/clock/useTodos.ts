@@ -6,6 +6,7 @@ export interface UseTodosResult {
   addTodo: (text: string) => void;
   deleteTodo: (id: string) => void;
   toggleStar: (id: string) => void;
+  toggleDone: (id: string) => void;
   moveTodoUp: (id: string) => void;
   clearTodos: () => void;
 }
@@ -43,7 +44,7 @@ export function useTodos(): UseTodosResult {
   function addTodo(text: string): void {
     const trimmed = text.trim();
     if (!trimmed) return;
-    setTodos((prev) => [...prev, { id: generateId(), text: trimmed, starred: false }]);
+    setTodos((prev) => [...prev, { id: generateId(), text: trimmed, starred: false, done: false }]);
   }
 
   function deleteTodo(id: string): void {
@@ -56,6 +57,12 @@ export function useTodos(): UseTodosResult {
         ...todo,
         starred: todo.id === id ? !todo.starred : false,
       }))
+    );
+  }
+
+  function toggleDone(id: string): void {
+    setTodos((prev) =>
+      prev.map((todo) => (todo.id === id ? { ...todo, done: !todo.done } : todo))
     );
   }
 
@@ -84,5 +91,5 @@ export function useTodos(): UseTodosResult {
     setTodos([]);
   }
 
-  return { todos, addTodo, deleteTodo, toggleStar, moveTodoUp, clearTodos };
+  return { todos, addTodo, deleteTodo, toggleStar, toggleDone, moveTodoUp, clearTodos };
 }

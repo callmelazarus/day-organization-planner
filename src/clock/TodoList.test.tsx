@@ -8,9 +8,20 @@ function makeTodo(overrides: Partial<Todo>): Todo {
     id: 'id',
     text: 'Todo',
     starred: false,
+    done: false,
     ...overrides,
   };
 }
+
+const noop = (): void => {};
+const defaultHandlers = {
+  onAdd: noop,
+  onDelete: noop,
+  onToggleStar: noop,
+  onToggleDone: noop,
+  onMoveUp: noop,
+  onClearAll: noop,
+};
 
 describe('TodoList', () => {
   afterEach(() => {
@@ -18,7 +29,7 @@ describe('TodoList', () => {
   });
 
   test('shows a muscle emoji as the empty-state message when there are no todos', () => {
-    render(<TodoList todos={[]} onAdd={() => {}} onDelete={() => {}} onToggleStar={() => {}} onMoveUp={() => {}} onClearAll={() => {}} />);
+    render(<TodoList todos={[]} {...defaultHandlers} />);
 
     expect(screen.getByText('💪')).toBeInTheDocument();
   });
@@ -26,7 +37,7 @@ describe('TodoList', () => {
   test('renders each todo\'s text', () => {
     const todos = [makeTodo({ id: '1', text: 'Buy groceries' }), makeTodo({ id: '2', text: 'Walk the dog' })];
 
-    render(<TodoList todos={todos} onAdd={() => {}} onDelete={() => {}} onToggleStar={() => {}} onMoveUp={() => {}} onClearAll={() => {}} />);
+    render(<TodoList todos={todos} {...defaultHandlers} />);
 
     expect(screen.getByText('Buy groceries')).toBeInTheDocument();
     expect(screen.getByText('Walk the dog')).toBeInTheDocument();
@@ -39,7 +50,7 @@ describe('TodoList', () => {
       makeTodo({ id: '3', text: 'Read a book' }),
     ];
 
-    render(<TodoList todos={todos} onAdd={() => {}} onDelete={() => {}} onToggleStar={() => {}} onMoveUp={() => {}} onClearAll={() => {}} />);
+    render(<TodoList todos={todos} {...defaultHandlers} />);
 
     const items = screen.getAllByRole('listitem');
     expect(items[0].textContent).toContain('Walk the dog');
@@ -47,7 +58,7 @@ describe('TodoList', () => {
 
   test('submitting the input with the Add button calls onAdd and clears the input', () => {
     const handleAdd = vi.fn();
-    render(<TodoList todos={[]} onAdd={handleAdd} onDelete={() => {}} onToggleStar={() => {}} onMoveUp={() => {}} onClearAll={() => {}} />);
+    render(<TodoList todos={[]} {...defaultHandlers} onAdd={handleAdd} />);
 
     const input = screen.getByPlaceholderText("Keep going!");
     fireEvent.change(input, { target: { value: 'New task' } });
@@ -59,7 +70,7 @@ describe('TodoList', () => {
 
   test('pressing Enter in the input calls onAdd', () => {
     const handleAdd = vi.fn();
-    render(<TodoList todos={[]} onAdd={handleAdd} onDelete={() => {}} onToggleStar={() => {}} onMoveUp={() => {}} onClearAll={() => {}} />);
+    render(<TodoList todos={[]} {...defaultHandlers} onAdd={handleAdd} />);
 
     const input = screen.getByPlaceholderText("Keep going!");
     fireEvent.change(input, { target: { value: 'New task' } });
@@ -70,7 +81,7 @@ describe('TodoList', () => {
 
   test('does not call onAdd for empty or whitespace-only input', () => {
     const handleAdd = vi.fn();
-    render(<TodoList todos={[]} onAdd={handleAdd} onDelete={() => {}} onToggleStar={() => {}} onMoveUp={() => {}} onClearAll={() => {}} />);
+    render(<TodoList todos={[]} {...defaultHandlers} onAdd={handleAdd} />);
 
     const input = screen.getByPlaceholderText("Keep going!");
     fireEvent.change(input, { target: { value: '   ' } });
@@ -83,7 +94,7 @@ describe('TodoList', () => {
     const handleToggleStar = vi.fn();
     const todos = [makeTodo({ id: '1', text: 'Buy groceries' })];
 
-    render(<TodoList todos={todos} onAdd={() => {}} onDelete={() => {}} onToggleStar={handleToggleStar} onMoveUp={() => {}} onClearAll={() => {}} />);
+    render(<TodoList todos={todos} {...defaultHandlers} onToggleStar={handleToggleStar} />);
 
     fireEvent.click(screen.getByRole('button', { name: /star/i }));
 
@@ -94,7 +105,7 @@ describe('TodoList', () => {
     const handleDelete = vi.fn();
     const todos = [makeTodo({ id: '1', text: 'Buy groceries' })];
 
-    render(<TodoList todos={todos} onAdd={() => {}} onDelete={handleDelete} onToggleStar={() => {}} onMoveUp={() => {}} onClearAll={() => {}} />);
+    render(<TodoList todos={todos} {...defaultHandlers} onDelete={handleDelete} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
 
@@ -108,7 +119,7 @@ describe('TodoList', () => {
       makeTodo({ id: '2', text: 'Walk the dog' }),
     ];
 
-    render(<TodoList todos={todos} onAdd={() => {}} onDelete={() => {}} onToggleStar={() => {}} onMoveUp={handleMoveUp} onClearAll={() => {}} />);
+    render(<TodoList todos={todos} {...defaultHandlers} onMoveUp={handleMoveUp} />);
 
     fireEvent.click(screen.getAllByRole('button', { name: 'Move up' })[1]);
 
@@ -121,7 +132,7 @@ describe('TodoList', () => {
       makeTodo({ id: '2', text: 'Walk the dog' }),
     ];
 
-    render(<TodoList todos={todos} onAdd={() => {}} onDelete={() => {}} onToggleStar={() => {}} onMoveUp={() => {}} onClearAll={() => {}} />);
+    render(<TodoList todos={todos} {...defaultHandlers} />);
 
     const [firstMoveUp, secondMoveUp] = screen.getAllByRole('button', { name: 'Move up' });
     expect(firstMoveUp).toBeDisabled();
@@ -129,7 +140,7 @@ describe('TodoList', () => {
   });
 
   test('the clear-all button is disabled when there are no todos', () => {
-    render(<TodoList todos={[]} onAdd={() => {}} onDelete={() => {}} onToggleStar={() => {}} onMoveUp={() => {}} onClearAll={() => {}} />);
+    render(<TodoList todos={[]} {...defaultHandlers} />);
 
     expect(screen.getByRole('button', { name: 'Clear all tasks' })).toBeDisabled();
   });
@@ -138,7 +149,7 @@ describe('TodoList', () => {
     const handleClearAll = vi.fn();
     const todos = [makeTodo({ id: '1', text: 'Buy groceries' })];
 
-    render(<TodoList todos={todos} onAdd={() => {}} onDelete={() => {}} onToggleStar={() => {}} onMoveUp={() => {}} onClearAll={handleClearAll} />);
+    render(<TodoList todos={todos} {...defaultHandlers} onClearAll={handleClearAll} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Clear all tasks' }));
 
@@ -155,12 +166,69 @@ describe('TodoList', () => {
     const handleClearAll = vi.fn();
     const todos = [makeTodo({ id: '1', text: 'Buy groceries' })];
 
-    render(<TodoList todos={todos} onAdd={() => {}} onDelete={() => {}} onToggleStar={() => {}} onMoveUp={() => {}} onClearAll={handleClearAll} />);
+    render(<TodoList todos={todos} {...defaultHandlers} onClearAll={handleClearAll} />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Clear all tasks' }));
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
 
     expect(handleClearAll).not.toHaveBeenCalled();
     expect(screen.queryByRole('dialog', { name: 'Clear all todos?' })).not.toBeInTheDocument();
+  });
+
+  test('clicking a todo\'s Done button calls onToggleDone with its id', () => {
+    const handleToggleDone = vi.fn();
+    const todos = [makeTodo({ id: '1', text: 'Buy groceries' })];
+
+    render(<TodoList todos={todos} {...defaultHandlers} onToggleDone={handleToggleDone} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Done' }));
+
+    expect(handleToggleDone).toHaveBeenCalledWith('1');
+  });
+
+  test('a done todo renders with strikethrough text', () => {
+    const todos = [makeTodo({ id: '1', text: 'Buy groceries', done: true })];
+
+    render(<TodoList todos={todos} {...defaultHandlers} />);
+
+    expect(screen.getByText('Buy groceries')).toHaveStyle({ textDecoration: 'line-through' });
+  });
+
+  test('a not-done todo renders without strikethrough text', () => {
+    const todos = [makeTodo({ id: '1', text: 'Buy groceries', done: false })];
+
+    render(<TodoList todos={todos} {...defaultHandlers} />);
+
+    expect(screen.getByText('Buy groceries')).toHaveStyle({ textDecoration: 'none' });
+  });
+
+  test('done todos render at the bottom of the list, below starred and unstarred todos', () => {
+    const todos = [
+      makeTodo({ id: '1', text: 'Done task', done: true }),
+      makeTodo({ id: '2', text: 'Starred task', starred: true }),
+      makeTodo({ id: '3', text: 'Plain task' }),
+    ];
+
+    render(<TodoList todos={todos} {...defaultHandlers} />);
+
+    const items = screen.getAllByRole('listitem');
+    expect(items.map((item) => item.textContent)).toEqual([
+      expect.stringContaining('Starred task'),
+      expect.stringContaining('Plain task'),
+      expect.stringContaining('Done task'),
+    ]);
+  });
+
+  test('marking a starred todo done still sorts it below not-done todos', () => {
+    const todos = [
+      makeTodo({ id: '1', text: 'Starred and done', starred: true, done: true }),
+      makeTodo({ id: '2', text: 'Plain task' }),
+    ];
+
+    render(<TodoList todos={todos} {...defaultHandlers} />);
+
+    const items = screen.getAllByRole('listitem');
+    expect(items[0].textContent).toContain('Plain task');
+    expect(items[1].textContent).toContain('Starred and done');
   });
 });

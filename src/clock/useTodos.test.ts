@@ -23,6 +23,7 @@ describe('useTodos', () => {
     expect(result.current.todos[0]).toMatchObject({
       text: 'Buy groceries',
       starred: false,
+      done: false,
     });
   });
 
@@ -188,6 +189,55 @@ describe('useTodos', () => {
       'Read a book',
     ]);
     expect(result.current.todos.find((todo) => todo.id === firstId)?.starred).toBe(false);
+  });
+
+  test('toggleDone marks a todo done', () => {
+    const { result } = renderHook(() => useTodos());
+
+    act(() => {
+      result.current.addTodo('Buy groceries');
+    });
+    const id = result.current.todos[0].id;
+
+    act(() => {
+      result.current.toggleDone(id);
+    });
+
+    expect(result.current.todos[0].done).toBe(true);
+  });
+
+  test('toggleDone on a done todo marks it not done again', () => {
+    const { result } = renderHook(() => useTodos());
+
+    act(() => {
+      result.current.addTodo('Buy groceries');
+    });
+    const id = result.current.todos[0].id;
+
+    act(() => {
+      result.current.toggleDone(id);
+      result.current.toggleDone(id);
+    });
+
+    expect(result.current.todos[0].done).toBe(false);
+  });
+
+  test('toggleDone only affects the target todo', () => {
+    const { result } = renderHook(() => useTodos());
+
+    act(() => {
+      result.current.addTodo('Buy groceries');
+      result.current.addTodo('Walk the dog');
+    });
+    const [firstId, secondId] = result.current.todos.map((todo) => todo.id);
+
+    act(() => {
+      result.current.toggleDone(firstId);
+    });
+
+    const byId = Object.fromEntries(result.current.todos.map((todo) => [todo.id, todo.done]));
+    expect(byId[firstId]).toBe(true);
+    expect(byId[secondId]).toBe(false);
   });
 
   test('clearTodos removes all todos', () => {
