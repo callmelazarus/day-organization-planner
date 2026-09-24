@@ -31,7 +31,40 @@ A **"View all tasks"** button opens a modal listing every segment for the day
 in chronological order, independent of which dial it's on.
 
 A **"Download image"** button exports a snapshot of just the two dials as a
-PNG file, named `day-planner-YYYY-MM-DD.png`.
+PNG file, named `day-planner-YYYY-MM-DD.png`. A **"Clear"** button (with a
+confirmation prompt) removes every segment from both dials.
+
+## To-do list
+
+Below the dials, an always-visible to-do list holds tasks that aren't tied
+to a specific hour. Type into the input and hit Enter or **Add** to add a
+task.
+
+- **Star** (☆/★) pins one task to the top of the list; starring a new task
+  un-stars whichever one was starred before, so at most one is ever pinned.
+- **Move up** (↑) reorders a task earlier within its own group (starred
+  tasks only reorder among starred, unstarred among unstarred).
+- **Done** marks a task complete: its text gets a strikethrough and it
+  drops to the bottom of the list, below every active task.
+- **Delete** removes a single task.
+- **Clear all** (🗑️, with a confirmation prompt) removes every task at once.
+
+The list persists in `localStorage`, so it survives a page reload.
+
+## Pomodoro timer
+
+A 20-minute countdown timer sits fixed in the top-right corner, sized to
+match the "Day Planner" title. **Start** begins the countdown (or restarts
+it at 20:00 if it had already finished); the button becomes **Pause** while
+running. **Reset** returns it to 20:00 at any time.
+
+Small ▲/▼ buttons to the left of the countdown adjust it by one minute;
+they're disabled while the timer is running so the duration can't drift
+mid-block. When the countdown reaches 0:00, the display turns red and a
+browser notification fires if notification permission was granted
+(requested the first time you click Start).
+
+The timer resets to 20:00 on page reload — it isn't persisted.
 
 ## Stack
 
