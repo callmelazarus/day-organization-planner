@@ -7,6 +7,7 @@ export interface UsePomodoroTimerResult {
   start: () => void;
   pause: () => void;
   reset: () => void;
+  adjustMinutes: (deltaMinutes: number) => void;
 }
 
 const DURATION_SECONDS = 20 * 60;
@@ -51,5 +52,13 @@ export function usePomodoroTimer(): UsePomodoroTimerResult {
     setRemainingSeconds(DURATION_SECONDS);
   }
 
-  return { remainingSeconds, isRunning, isComplete, start, pause, reset };
+  function adjustMinutes(deltaMinutes: number): void {
+    setRemainingSeconds((prev) => {
+      const next = Math.max(0, prev + deltaMinutes * 60);
+      if (next > 0) setIsComplete(false);
+      return next;
+    });
+  }
+
+  return { remainingSeconds, isRunning, isComplete, start, pause, reset, adjustMinutes };
 }

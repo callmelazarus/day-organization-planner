@@ -106,6 +106,50 @@ describe('PomodoroTimer', () => {
     expect(MockNotification.instances).toHaveLength(1);
   });
 
+  test('clicking the up button adds a minute to the display', () => {
+    render(<PomodoroTimer />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Add a minute' }));
+
+    expect(screen.getByText('21:00')).toBeInTheDocument();
+  });
+
+  test('clicking the down button subtracts a minute from the display', () => {
+    render(<PomodoroTimer />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Subtract a minute' }));
+
+    expect(screen.getByText('19:00')).toBeInTheDocument();
+  });
+
+  test('the up and down buttons are disabled while the timer is running', () => {
+    render(<PomodoroTimer />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start' }));
+
+    expect(screen.getByRole('button', { name: 'Add a minute' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Subtract a minute' })).toBeDisabled();
+  });
+
+  test('the up and down buttons are enabled again once paused', () => {
+    render(<PomodoroTimer />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Pause' }));
+
+    expect(screen.getByRole('button', { name: 'Add a minute' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Subtract a minute' })).toBeEnabled();
+  });
+
+  test('the down button is disabled once the countdown reaches 0', () => {
+    render(<PomodoroTimer />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start' }));
+    advance(20 * 60 * 1000);
+
+    expect(screen.getByRole('button', { name: 'Subtract a minute' })).toBeDisabled();
+  });
+
   test('no notification fires on completion when permission is denied', () => {
     MockNotification.permission = 'denied';
     render(<PomodoroTimer />);

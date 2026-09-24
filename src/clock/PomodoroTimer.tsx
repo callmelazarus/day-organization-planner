@@ -16,7 +16,8 @@ function requestNotificationPermissionIfUndecided(): void {
 }
 
 export function PomodoroTimer(): ReactElement {
-  const { remainingSeconds, isRunning, isComplete, start, pause, reset } = usePomodoroTimer();
+  const { remainingSeconds, isRunning, isComplete, start, pause, reset, adjustMinutes } =
+    usePomodoroTimer();
 
   useEffect(() => {
     if (!isComplete) return;
@@ -42,9 +43,31 @@ export function PomodoroTimer(): ReactElement {
         gap: 8,
       }}
     >
-      <span style={{ fontSize: '3.2em', color: isComplete ? 'red' : 'inherit' }}>
-        {formatTime(remainingSeconds)}
-      </span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <button
+            type="button"
+            onClick={() => adjustMinutes(1)}
+            disabled={isRunning}
+            aria-label="Add a minute"
+            style={{ fontSize: '0.7rem', lineHeight: 1, padding: '2px 6px' }}
+          >
+            ▲
+          </button>
+          <button
+            type="button"
+            onClick={() => adjustMinutes(-1)}
+            disabled={isRunning || remainingSeconds === 0}
+            aria-label="Subtract a minute"
+            style={{ fontSize: '0.7rem', lineHeight: 1, padding: '2px 6px' }}
+          >
+            ▼
+          </button>
+        </div>
+        <span style={{ fontSize: '3.2em', color: isComplete ? 'red' : 'inherit' }}>
+          {formatTime(remainingSeconds)}
+        </span>
+      </div>
       <div style={{ display: 'flex', gap: 8 }}>
         {isRunning ? (
           <button type="button" onClick={pause}>
