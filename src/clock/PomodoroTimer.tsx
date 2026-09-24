@@ -64,7 +64,13 @@ export function PomodoroTimer(): ReactElement {
             ▼
           </button>
         </div>
-        <span style={{ fontSize: '3.2em', color: isComplete ? 'red' : 'inherit' }}>
+        <span
+          style={{
+            fontSize: '3.2em',
+            color: isComplete ? 'red' : 'inherit',
+            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+          }}
+        >
           {formatTime(remainingSeconds)}
         </span>
       </div>
