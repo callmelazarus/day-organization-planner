@@ -40,6 +40,25 @@ describe('usePomodoroTimer', () => {
     expect(result.current.remainingSeconds).toBe(1196);
   });
 
+  test('a delayed tick (simulating a throttled background tab) catches up to real elapsed time', () => {
+    const { result } = renderHook(() => usePomodoroTimer());
+
+    act(() => {
+      result.current.start();
+    });
+
+    // Simulate the browser throttling the interval: real time jumps ahead
+    // (5s via setSystemTime, then another 1s as advanceTimersByTime moves
+    // the clock to fire the next pending tick) while only one interval
+    // callback actually fires, instead of the ~6 that "should" have.
+    act(() => {
+      vi.setSystemTime(Date.now() + 5000);
+      vi.advanceTimersByTime(1000);
+    });
+
+    expect(result.current.remainingSeconds).toBe(1194);
+  });
+
   test('pause() stops the countdown', () => {
     const { result } = renderHook(() => usePomodoroTimer());
 
