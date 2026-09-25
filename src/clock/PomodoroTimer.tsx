@@ -67,7 +67,7 @@ export function PomodoroTimer(): ReactElement {
         <span
           style={{
             fontSize: '3.2em',
-            color: isComplete ? 'red' : 'inherit',
+            color: isComplete ? 'red' : isRunning ? 'green' : '',
             fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
           }}
         >

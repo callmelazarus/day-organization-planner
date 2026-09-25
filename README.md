@@ -56,7 +56,8 @@ The list persists in `localStorage`, so it survives a page reload.
 A 20-minute countdown timer sits fixed in the top-right corner, sized to
 match the "Day Planner" title. **Start** begins the countdown (or restarts
 it at 20:00 if it had already finished); the button becomes **Pause** while
-running. **Reset** returns it to 20:00 at any time.
+running, and the display turns green while it's counting down. **Reset**
+returns it to 20:00 at any time.
 
 Small ▲/▼ buttons to the left of the countdown adjust it by one minute;
 they're disabled while the timer is running so the duration can't drift

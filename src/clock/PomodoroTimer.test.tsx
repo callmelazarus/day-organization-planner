@@ -88,6 +88,28 @@ describe('PomodoroTimer', () => {
     expect(screen.getByText('20:00')).not.toHaveStyle({ color: 'rgb(255, 0, 0)' });
   });
 
+  test('the display turns green while the timer is running', () => {
+    render(<PomodoroTimer />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start' }));
+
+    expect(screen.getByText('20:00')).toHaveStyle({ color: 'rgb(0, 128, 0)' });
+  });
+
+  test('the display is not green before starting', () => {
+    render(<PomodoroTimer />);
+    expect(screen.getByText('20:00')).not.toHaveStyle({ color: 'rgb(0, 128, 0)' });
+  });
+
+  test('the display returns to the default color after pausing', () => {
+    render(<PomodoroTimer />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Pause' }));
+
+    expect(screen.getByText('20:00')).not.toHaveStyle({ color: 'rgb(0, 128, 0)' });
+  });
+
   test('the first Start click requests notification permission when not yet decided', () => {
     render(<PomodoroTimer />);
 
