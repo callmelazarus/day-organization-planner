@@ -138,7 +138,7 @@ export function ClockDial({
       {hours.map((hour) => {
         const angle = hourToAngle(dial, hour);
         const rad = ((angle - 90) * Math.PI) / 180;
-        const labelRadius = OUTER_RADIUS + 20;
+        const labelRadius = OUTER_RADIUS + 30;
         const x = CENTER + labelRadius * Math.cos(rad);
         const y = CENTER + labelRadius * Math.sin(rad);
         return (
