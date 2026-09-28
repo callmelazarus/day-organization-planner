@@ -80,6 +80,42 @@ describe('ClockDial', () => {
     expect(daytimeContainer.querySelector('[data-testid="dial-range"]')?.tagName).toBe('path');
   });
 
+  test('renders an hour tick mark at each labeled hour on the daytime dial', () => {
+    const { container } = render(
+      <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+    );
+
+    expect(container.querySelectorAll('[data-testid="hour-tick"]')).toHaveLength(12);
+  });
+
+  test('renders an hour tick mark at each labeled hour on the nighttime dial', () => {
+    const { container } = render(
+      <ClockDial dial="nighttime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+    );
+
+    expect(container.querySelectorAll('[data-testid="hour-tick"]')).toHaveLength(7);
+  });
+
+  test('hour tick marks are longer than half-hour tick marks', () => {
+    const { container } = render(
+      <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+    );
+
+    function lineLength(line: Element): number {
+      const x1 = Number(line.getAttribute('x1'));
+      const y1 = Number(line.getAttribute('y1'));
+      const x2 = Number(line.getAttribute('x2'));
+      const y2 = Number(line.getAttribute('y2'));
+      return Math.hypot(x2 - x1, y2 - y1);
+    }
+
+    const hourTick = container.querySelector('[data-testid="hour-tick"]');
+    const halfHourTick = container.querySelector('[data-testid="half-hour-tick"]');
+    expect(hourTick).not.toBeNull();
+    expect(halfHourTick).not.toBeNull();
+    expect(lineLength(hourTick as Element)).toBeGreaterThan(lineLength(halfHourTick as Element));
+  });
+
   test('renders a half-hour tick mark between each labeled hour on the daytime dial', () => {
     const { container } = render(
       <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
