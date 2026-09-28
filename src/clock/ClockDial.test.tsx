@@ -80,6 +80,24 @@ describe('ClockDial', () => {
     expect(daytimeContainer.querySelector('[data-testid="dial-range"]')?.tagName).toBe('path');
   });
 
+  test('renders a half-hour tick mark between each labeled hour on the daytime dial', () => {
+    const { container } = render(
+      <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+    );
+
+    // 12 labeled hours (7am-6pm) -> 11 half-hour points between them.
+    expect(container.querySelectorAll('[data-testid="half-hour-tick"]')).toHaveLength(11);
+  });
+
+  test('renders a half-hour tick mark between each labeled hour on the nighttime dial', () => {
+    const { container } = render(
+      <ClockDial dial="nighttime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+    );
+
+    // 7 labeled hours (6pm-12am) -> 6 half-hour points between them.
+    expect(container.querySelectorAll('[data-testid="half-hour-tick"]')).toHaveLength(6);
+  });
+
   test('renders no drag preview before any pointer interaction', () => {
     const { container } = render(
       <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />

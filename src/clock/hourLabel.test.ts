@@ -9,6 +9,12 @@ describe('hourLabel', () => {
     expect(hourLabel(23)).toBe('11');
     expect(hourLabel(24)).toBe('12');
   });
+
+  test('appends :30 for half-hour values', () => {
+    expect(hourLabel(7.5)).toBe('7:30');
+    expect(hourLabel(12.5)).toBe('12:30');
+    expect(hourLabel(23.5)).toBe('11:30');
+  });
 });
 
 describe('formatHourRangeLabel', () => {
@@ -30,5 +36,17 @@ describe('formatHourRangeLabel', () => {
 
   test('formats the full evening dial span', () => {
     expect(formatHourRangeLabel(12, 24)).toBe('12pm – 12am');
+  });
+
+  test('formats a half-hour start', () => {
+    expect(formatHourRangeLabel(7.5, 9)).toBe('7:30am – 9am');
+  });
+
+  test('formats a half-hour end', () => {
+    expect(formatHourRangeLabel(7, 8.5)).toBe('7am – 8:30am');
+  });
+
+  test('formats a half-hour range crossing noon', () => {
+    expect(formatHourRangeLabel(11.5, 12.5)).toBe('11:30am – 12:30pm');
   });
 });

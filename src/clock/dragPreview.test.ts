@@ -43,6 +43,11 @@ describe('computeDragPreview', () => {
     expect(preview?.arcPath).toBe('');
   });
 
+  test('builds a label for a half-hour range', () => {
+    const preview = computeDragPreview('daytime', 7, 7.5, 200, 200, 60, 150);
+    expect(preview?.labelText).toBe('7am – 7:30am');
+  });
+
   test('computes the angular midpoint of the range', () => {
     const preview = computeDragPreview('daytime', 7, 9, 200, 200, 60, 150);
     // hourToAngle('daytime', 7) = 210, hourToAngle('daytime', 9) = 270

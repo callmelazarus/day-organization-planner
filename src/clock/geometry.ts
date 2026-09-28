@@ -16,6 +16,10 @@ export function angleToHour(dial: DialType, angleDeg: number): number | null {
   return null;
 }
 
+export function snapToHalfHour(hour: number): number {
+  return Math.round(hour * 2) / 2;
+}
+
 export function hourToAngle(dial: DialType, hour: number): number {
   if (dial === 'nighttime') {
     return 180 + (hour - 18) * 30;

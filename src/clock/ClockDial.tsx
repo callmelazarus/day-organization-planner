@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import type { MouseEvent, PointerEvent as ReactPointerEvent, ReactElement } from 'react';
-import { angleToHour, buildArcPath, hourToAngle } from './geometry';
+import { angleToHour, buildArcPath, hourToAngle, snapToHalfHour } from './geometry';
 import { computeDragPreview } from './dragPreview';
 import { DIAL_ACCENT_COLOR } from './dialColor';
 import { hourLabel } from './hourLabel';
@@ -62,7 +62,7 @@ export function ClockDial({
     const y = (event.clientY - rect.top) * scale;
     const angle = pointerAngle(CENTER, CENTER, x, y);
     const hour = angleToHour(dial, angle);
-    return hour === null ? null : Math.round(hour);
+    return hour === null ? null : snapToHalfHour(hour);
   }
 
   function handlePointerDown(event: ReactPointerEvent<SVGSVGElement>): void {
@@ -145,6 +145,28 @@ export function ClockDial({
           <text key={hour} x={x} y={y} textAnchor="middle" fontSize={13} fill="#aaa">
             {hourLabel(hour)}
           </text>
+        );
+      })}
+      {hours.slice(0, -1).map((hour) => {
+        const angle = hourToAngle(dial, hour + 0.5);
+        const rad = ((angle - 90) * Math.PI) / 180;
+        const tickInner = OUTER_RADIUS + 4;
+        const tickOuter = OUTER_RADIUS + 10;
+        const x1 = CENTER + tickInner * Math.cos(rad);
+        const y1 = CENTER + tickInner * Math.sin(rad);
+        const x2 = CENTER + tickOuter * Math.cos(rad);
+        const y2 = CENTER + tickOuter * Math.sin(rad);
+        return (
+          <line
+            key={`half-${hour}`}
+            data-testid="half-hour-tick"
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+            stroke="#666"
+            strokeWidth={1}
+          />
         );
       })}
       {segments.map((segment) => (

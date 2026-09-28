@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { angleToHour, hourToAngle, buildArcPath } from './geometry';
+import { angleToHour, hourToAngle, buildArcPath, snapToHalfHour } from './geometry';
 
 describe('angleToHour', () => {
   test('nighttime dial maps the used half correctly', () => {
@@ -39,6 +39,28 @@ describe('hourToAngle', () => {
     expect(hourToAngle('daytime', 7)).toBe(210);
     expect(hourToAngle('daytime', 12)).toBe(360);
     expect(hourToAngle('daytime', 18)).toBe(540);
+  });
+});
+
+describe('snapToHalfHour', () => {
+  test('rounds down to the hour when closer to it', () => {
+    expect(snapToHalfHour(7.1)).toBe(7);
+    expect(snapToHalfHour(7.24)).toBe(7);
+  });
+
+  test('rounds to the half hour when closer to it', () => {
+    expect(snapToHalfHour(7.26)).toBe(7.5);
+    expect(snapToHalfHour(7.5)).toBe(7.5);
+    expect(snapToHalfHour(7.74)).toBe(7.5);
+  });
+
+  test('rounds up to the next hour when closer to it', () => {
+    expect(snapToHalfHour(7.76)).toBe(8);
+  });
+
+  test('leaves whole and half hours unchanged', () => {
+    expect(snapToHalfHour(12)).toBe(12);
+    expect(snapToHalfHour(12.5)).toBe(12.5);
   });
 });
 

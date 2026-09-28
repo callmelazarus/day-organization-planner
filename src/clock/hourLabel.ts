@@ -1,6 +1,8 @@
 export function hourLabel(hour: number): string {
-  const displayHour = hour === 24 ? 12 : hour > 12 ? hour - 12 : hour;
-  return String(displayHour);
+  const wholeHour = Math.floor(hour);
+  const displayHour = wholeHour === 24 ? 12 : wholeHour > 12 ? wholeHour - 12 : wholeHour;
+  const minutesSuffix = hour % 1 === 0.5 ? ':30' : '';
+  return `${displayHour}${minutesSuffix}`;
 }
 
 function amPmSuffix(hour: number): 'am' | 'pm' {

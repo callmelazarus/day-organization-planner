@@ -16,9 +16,10 @@ The day is split into two clock dials:
 - **Night dial** — 6:00 PM to 12:00 AM
 
 To plan a segment, click and drag across the dial between the start and end
-hour you want; the dial snaps to whole hours and shows a live preview of the
-range as you drag. On release, a small popup opens next to where you let go
-asking what's planned for that block.
+time you want; the dial snaps to 30-minute increments (with a small tick
+mark at each half hour) and shows a live preview of the range as you drag.
+On release, a small popup opens next to where you let go asking what's
+planned for that block.
 
 Each segment is filled with a random pastel color, with its label rendered in
 a darker shade of the same hue so it stays readable against the fill. Segment
