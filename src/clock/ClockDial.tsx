@@ -142,7 +142,7 @@ export function ClockDial({
         const x = CENTER + labelRadius * Math.cos(rad);
         const y = CENTER + labelRadius * Math.sin(rad);
         return (
-          <text key={hour} x={x} y={y} textAnchor="middle" fontSize={13} fill="#aaa">
+          <text key={hour} x={x} y={y} textAnchor="middle" fontSize={17} fill="#aaa">
             {hourLabel(hour)}
           </text>
         );
