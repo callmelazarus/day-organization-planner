@@ -42,7 +42,7 @@ export function TodoList({
     <div
       style={{
         width: '100%',
-        maxWidth: 420,
+        maxWidth: 640,
         display: 'flex',
         flexDirection: 'column',
         gap: 12,
