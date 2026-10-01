@@ -47,6 +47,26 @@ describe('TodoList', () => {
     expect(screen.getByTestId('todo-list')).toHaveStyle({ maxWidth: '360px' });
   });
 
+  test('hides the Done and Move up buttons on a mobile-sized viewport', () => {
+    setWindowWidth(400);
+    const todos = [makeTodo({ id: '1', text: 'Buy groceries' })];
+
+    render(<TodoList todos={todos} {...defaultHandlers} />);
+
+    expect(screen.queryByRole('button', { name: 'Done' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Move up' })).not.toBeInTheDocument();
+  });
+
+  test('shows the Done and Move up buttons on a desktop-sized viewport', () => {
+    setWindowWidth(1024);
+    const todos = [makeTodo({ id: '1', text: 'Buy groceries' })];
+
+    render(<TodoList todos={todos} {...defaultHandlers} />);
+
+    expect(screen.getByRole('button', { name: 'Done' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Move up' })).toBeInTheDocument();
+  });
+
   test('shows a muscle emoji as the empty-state message when there are no todos', () => {
     render(<TodoList todos={[]} {...defaultHandlers} />);
 

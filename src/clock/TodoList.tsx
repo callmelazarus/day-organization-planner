@@ -123,27 +123,31 @@ export function TodoList({
                 >
                   {todo.text}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => onToggleDone(todo.id)}
-                  style={{ backgroundColor: '#2f5fa8', color: '#dbe6f7' }}
-                >
-                  Done
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onMoveUp(todo.id)}
-                  disabled={!canMoveUp}
-                  aria-label="Move up"
-                  style={{
-                    backgroundColor: '#4a6a8a',
-                    color: '#dbe9f5',
-                    opacity: canMoveUp ? 1 : 0.4,
-                    cursor: canMoveUp ? 'pointer' : 'not-allowed',
-                  }}
-                >
-                  ↑
-                </button>
+                {!isMobile && (
+                  <button
+                    type="button"
+                    onClick={() => onToggleDone(todo.id)}
+                    style={{ backgroundColor: '#2f5fa8', color: '#dbe6f7' }}
+                  >
+                    Done
+                  </button>
+                )}
+                {!isMobile && (
+                  <button
+                    type="button"
+                    onClick={() => onMoveUp(todo.id)}
+                    disabled={!canMoveUp}
+                    aria-label="Move up"
+                    style={{
+                      backgroundColor: '#4a6a8a',
+                      color: '#dbe9f5',
+                      opacity: canMoveUp ? 1 : 0.4,
+                      cursor: canMoveUp ? 'pointer' : 'not-allowed',
+                    }}
+                  >
+                    ↑
+                  </button>
+                )}
                 <button
                   type="button"
                   onClick={() => onDelete(todo.id)}
