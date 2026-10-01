@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import type { ReactElement } from 'react';
 import { usePomodoroTimer } from './usePomodoroTimer';
+import { MOBILE_BREAKPOINT_PX, useIsMobile } from './useIsMobile';
 
 function formatTime(totalSeconds: number): string {
   const minutes = Math.floor(totalSeconds / 60);
@@ -15,9 +16,10 @@ function requestNotificationPermissionIfUndecided(): void {
   }
 }
 
-export function PomodoroTimer(): ReactElement {
+export function PomodoroTimer(): ReactElement | null {
   const { remainingSeconds, isRunning, isComplete, start, pause, reset, adjustMinutes } =
     usePomodoroTimer();
+  const isMobile = useIsMobile(MOBILE_BREAKPOINT_PX);
 
   useEffect(() => {
     if (!isComplete) return;
@@ -30,6 +32,8 @@ export function PomodoroTimer(): ReactElement {
     requestNotificationPermissionIfUndecided();
     start();
   }
+
+  if (isMobile) return null;
 
   return (
     <div

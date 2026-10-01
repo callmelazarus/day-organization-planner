@@ -18,6 +18,10 @@ function advance(ms: number): void {
   });
 }
 
+function setWindowWidth(width: number): void {
+  Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: width });
+}
+
 describe('PomodoroTimer', () => {
   beforeEach(() => {
     vi.useFakeTimers({
@@ -33,9 +37,23 @@ describe('PomodoroTimer', () => {
     cleanup();
     vi.unstubAllGlobals();
     vi.useRealTimers();
+    setWindowWidth(1024);
   });
 
   test('renders 20:00 initially', () => {
+    render(<PomodoroTimer />);
+    expect(screen.getByText('20:00')).toBeInTheDocument();
+  });
+
+  test('renders nothing on a mobile-sized viewport', () => {
+    setWindowWidth(400);
+    render(<PomodoroTimer />);
+    expect(screen.queryByText('20:00')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Start' })).not.toBeInTheDocument();
+  });
+
+  test('renders normally on a desktop-sized viewport', () => {
+    setWindowWidth(1024);
     render(<PomodoroTimer />);
     expect(screen.getByText('20:00')).toBeInTheDocument();
   });

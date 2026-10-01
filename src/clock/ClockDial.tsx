@@ -103,6 +103,7 @@ export function ClockDial({
       viewBox={`0 0 ${SIZE} ${SIZE}`}
       width={SIZE}
       height={SIZE}
+      style={{ maxWidth: '100%', height: 'auto' }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

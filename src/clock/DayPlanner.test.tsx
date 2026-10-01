@@ -1,5 +1,5 @@
 import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, cleanup, within } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup, within, act } from '@testing-library/react';
 import { DayPlanner } from './DayPlanner';
 import * as exportSnapshot from './exportSnapshot';
 
@@ -179,6 +179,45 @@ describe('DayPlanner', () => {
     expect(svgs[0].tagName.toLowerCase()).toBe('svg');
     expect(svgs[1].tagName.toLowerCase()).toBe('svg');
     expect(labels).toEqual(['☀️ Day', '🌙 Night']);
+  });
+
+  test('stacks the dials vertically when the viewport is narrower than the mobile breakpoint', () => {
+    Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 400 });
+
+    const { container } = render(<DayPlanner />);
+
+    expect(container.querySelector('[data-testid="dials-row"]')).toHaveStyle({
+      flexDirection: 'column',
+    });
+
+    Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1024 });
+  });
+
+  test('lays the dials out side by side when the viewport is at least the mobile breakpoint', () => {
+    Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1024 });
+
+    const { container } = render(<DayPlanner />);
+
+    expect(container.querySelector('[data-testid="dials-row"]')).toHaveStyle({
+      flexDirection: 'row',
+    });
+  });
+
+  test('restacks the dials when the window is resized below the breakpoint', () => {
+    Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1024 });
+
+    const { container } = render(<DayPlanner />);
+
+    act(() => {
+      Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 400 });
+      window.dispatchEvent(new Event('resize'));
+    });
+
+    expect(container.querySelector('[data-testid="dials-row"]')).toHaveStyle({
+      flexDirection: 'column',
+    });
+
+    Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1024 });
   });
 
   test('the todo list is always visible without needing a button to open it', () => {

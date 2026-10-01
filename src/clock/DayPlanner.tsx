@@ -8,6 +8,7 @@ import { TodoList } from './TodoList';
 import { downloadDialsSnapshot } from './exportSnapshot';
 import { useSegments } from './useSegments';
 import { useTodos } from './useTodos';
+import { MOBILE_BREAKPOINT_PX, useIsMobile } from './useIsMobile';
 import type { Segment } from './types';
 
 const DAYTIME_LABEL = '☀️ Day';
@@ -37,6 +38,7 @@ export function DayPlanner(): ReactElement {
   const [isTaskListOpen, setIsTaskListOpen] = useState(false);
   const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
   const dialsRowRef = useRef<HTMLDivElement>(null);
+  const isMobile = useIsMobile(MOBILE_BREAKPOINT_PX);
 
   const daytimeSegments = segments.filter(
     (segment) => segment.startHour >= 7 && segment.startHour < 18
@@ -74,7 +76,17 @@ export function DayPlanner(): ReactElement {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
-      <div ref={dialsRowRef} style={{ display: 'flex', gap: 40, justifyContent: 'center' }}>
+      <div
+        ref={dialsRowRef}
+        data-testid="dials-row"
+        style={{
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          alignItems: 'center',
+          gap: isMobile ? 24 : 40,
+          justifyContent: 'center',
+        }}
+      >
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
           <ClockDial
             dial="daytime"

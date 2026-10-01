@@ -8,6 +8,17 @@ describe('ClockDial', () => {
     cleanup();
   });
 
+  test('renders the SVG at a fixed intrinsic size but lets it shrink to fit a narrower container', () => {
+    const { container } = render(
+      <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+    );
+
+    const svg = container.querySelector('svg');
+    expect(svg).toHaveAttribute('width', '400');
+    expect(svg).toHaveAttribute('height', '400');
+    expect(svg).toHaveStyle({ maxWidth: '100%', height: 'auto' });
+  });
+
   test('renders hour labels for the daytime dial (7am-6pm)', () => {
     render(
       <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />

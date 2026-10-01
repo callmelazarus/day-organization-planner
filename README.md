@@ -35,6 +35,13 @@ A **"Download image"** button exports a snapshot of just the two dials as a
 PNG file, named `day-planner-YYYY-MM-DD.png`. A **"Clear"** button (with a
 confirmation prompt) removes every segment from both dials.
 
+## Mobile layout
+
+Below a browser width of 480px (phone-sized), the two dials stack vertically
+instead of sitting side by side, each shrinking to fit the screen width, and
+the to-do list narrows to match. The pomodoro timer (below) is hidden on
+mobile to keep the layout focused.
+
 ## To-do list
 
 Below the dials, an always-visible to-do list holds tasks that aren't tied

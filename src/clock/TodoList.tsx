@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { FormEvent, ReactElement } from 'react';
 import { ConfirmModal } from './ConfirmModal';
+import { MOBILE_BREAKPOINT_PX, useIsMobile } from './useIsMobile';
 import type { Todo } from './types';
 
 export interface TodoListProps {
@@ -24,6 +25,7 @@ export function TodoList({
 }: TodoListProps): ReactElement {
   const [text, setText] = useState('');
   const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
+  const isMobile = useIsMobile(MOBILE_BREAKPOINT_PX);
 
   const orderedTodos = [...todos].sort((a, b) => {
     if (a.done !== b.done) return Number(a.done) - Number(b.done);
@@ -40,9 +42,10 @@ export function TodoList({
 
   return (
     <div
+      data-testid="todo-list"
       style={{
         width: '100%',
-        maxWidth: 640,
+        maxWidth: isMobile ? 360 : 640,
         display: 'flex',
         flexDirection: 'column',
         gap: 12,

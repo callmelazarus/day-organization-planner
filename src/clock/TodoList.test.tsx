@@ -23,9 +23,28 @@ const defaultHandlers = {
   onClearAll: noop,
 };
 
+function setWindowWidth(width: number): void {
+  Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: width });
+}
+
 describe('TodoList', () => {
   afterEach(() => {
     cleanup();
+    setWindowWidth(1024);
+  });
+
+  test('uses a wider max-width on a desktop-sized viewport', () => {
+    setWindowWidth(1024);
+    render(<TodoList todos={[]} {...defaultHandlers} />);
+
+    expect(screen.getByTestId('todo-list')).toHaveStyle({ maxWidth: '640px' });
+  });
+
+  test('uses a narrower max-width on a mobile-sized viewport', () => {
+    setWindowWidth(400);
+    render(<TodoList todos={[]} {...defaultHandlers} />);
+
+    expect(screen.getByTestId('todo-list')).toHaveStyle({ maxWidth: '360px' });
   });
 
   test('shows a muscle emoji as the empty-state message when there are no todos', () => {
