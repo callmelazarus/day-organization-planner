@@ -35,4 +35,9 @@ describe('CurrentTimeToggle', () => {
     render(<CurrentTimeToggle isOn={false} onToggle={() => {}} />);
     expect(screen.getByRole('button', { name: /current time/i })).toBeInTheDocument();
   });
+
+  test('has a tooltip describing its purpose', () => {
+    render(<CurrentTimeToggle isOn={false} onToggle={() => {}} />);
+    expect(screen.getByRole('button')).toHaveAttribute('title', 'Toggle Time display on clock face');
+  });
 });

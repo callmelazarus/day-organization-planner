@@ -15,6 +15,7 @@ export function CurrentTimeToggle({ isOn, onToggle }: CurrentTimeToggleProps): R
       onClick={onToggle}
       aria-pressed={isOn}
       aria-label="Toggle current time line"
+      title="Toggle Time display on clock face"
       style={{
         width: 48,
         height: 48,
