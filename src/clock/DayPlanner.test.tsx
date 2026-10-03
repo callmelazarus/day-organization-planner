@@ -290,7 +290,7 @@ describe('DayPlanner', () => {
 
     expect(screen.getByText(/PST$/)).toBeInTheDocument();
     expect(screen.getByText('Saturday October 3, 2026')).toBeInTheDocument();
-    expect(screen.getByText(/EST$/)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /EDT ▾$/ })).toBeInTheDocument();
 
     vi.useRealTimers();
   });

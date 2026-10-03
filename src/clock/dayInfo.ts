@@ -14,3 +14,12 @@ export function formatTimeInZone(date: Date, timeZone: string): string {
     hour12: true,
   }).format(date);
 }
+
+export function formatZoneAbbreviation(date: Date, timeZone: string): string {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone,
+    timeZoneName: 'short',
+  }).formatToParts(date);
+  const zonePart = parts.find((part) => part.type === 'timeZoneName');
+  return zonePart?.value ?? timeZone;
+}
