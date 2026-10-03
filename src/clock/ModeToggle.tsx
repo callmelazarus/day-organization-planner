@@ -21,10 +21,6 @@ export function ModeToggle({ mode, onToggle }: ModeToggleProps): ReactElement {
       aria-label="Toggle between single-day and week planning mode"
       onClick={onToggle}
       style={{
-        position: 'fixed',
-        top: 76,
-        left: 16,
-        zIndex: 5,
         display: 'inline-flex',
         border: '1px solid #3a3a3a',
         borderRadius: 999,

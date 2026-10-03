@@ -3,6 +3,7 @@ import type { MouseEvent, ReactElement } from 'react';
 import { ClockDial } from './ClockDial';
 import { ConfirmModal } from './ConfirmModal';
 import { CurrentTimeToggle } from './CurrentTimeToggle';
+import { DayInfoBubbles } from './DayInfoBubbles';
 import { ModeToggle } from './ModeToggle';
 import { SegmentPopup } from './SegmentPopup';
 import { TaskListModal } from './TaskListModal';
@@ -173,21 +174,46 @@ export function DayPlanner(): ReactElement {
   const clearConfirmMessage =
     mode === 'single' ? 'Clear all tasks?' : `Clear ${WEEKDAY_FULL_LABELS[selectedDay]}'s tasks?`;
 
+  const downloadTooltip =
+    mode === 'single'
+      ? 'Downloads this single day as an image'
+      : 'Downloads all 7 days as one stacked image';
+  const viewAllTasksTooltip =
+    mode === 'single' ? "Shows this single day's tasks" : "Shows all 7 days' tasks grouped by weekday";
+  const clearTooltip =
+    mode === 'single' ? "Clears this single day's tasks" : "Clears only the selected day's tasks";
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
-      <CurrentTimeToggle
-        isOn={isCurrentTimeOn}
-        onToggle={() => setIsCurrentTimeOn((prev) => !prev)}
-      />
-      <ModeToggle mode={mode} onToggle={handleToggleMode} />
-
-      {mode === 'week' && (
-        <WeekDaySelector
-          selectedDay={selectedDay}
-          todayDay={getTodayWeekday()}
-          onSelect={handleSelectDay}
+      <div
+        style={{
+          position: 'fixed',
+          top: 16,
+          left: 16,
+          zIndex: 5,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+        }}
+      >
+        <ModeToggle mode={mode} onToggle={handleToggleMode} />
+        <CurrentTimeToggle
+          isOn={isCurrentTimeOn}
+          onToggle={() => setIsCurrentTimeOn((prev) => !prev)}
         />
-      )}
+      </div>
+
+      <div style={{ opacity: isFaded ? 0 : 1, transition: 'opacity 160ms ease' }}>
+        {mode === 'week' ? (
+          <WeekDaySelector
+            selectedDay={selectedDay}
+            todayDay={getTodayWeekday()}
+            onSelect={handleSelectDay}
+          />
+        ) : (
+          <DayInfoBubbles now={now} />
+        )}
+      </div>
 
       <div
         ref={dialsRowRef}
@@ -255,21 +281,21 @@ export function DayPlanner(): ReactElement {
       )}
 
       <div style={{ display: 'flex', gap: 12 }}>
-        <button type="button" onClick={handleDownload}>
+        <button type="button" onClick={handleDownload} title={downloadTooltip} style={{ color: '#999' }}>
           Download image
         </button>
-        <button type="button" onClick={() => setIsTaskListOpen(true)}>
+        <button
+          type="button"
+          onClick={() => setIsTaskListOpen(true)}
+          title={viewAllTasksTooltip}
+          style={{ color: '#999' }}
+        >
           View all tasks
         </button>
-        <button type="button" onClick={handleClear}>
+        <button type="button" onClick={handleClear} title={clearTooltip} style={{ color: '#999' }}>
           Clear
         </button>
       </div>
-      <p style={{ fontSize: '0.75rem', color: '#999', margin: 0 }}>
-        {mode === 'single'
-          ? 'Download & View all tasks act on this single day.'
-          : 'Download & View all tasks aggregate all 7 days. Clear only wipes the selected day.'}
-      </p>
 
       <TodoList
         todos={todos}

@@ -282,6 +282,79 @@ describe('DayPlanner', () => {
     expect(screen.queryByText('Sun')).not.toBeInTheDocument();
   });
 
+  test('Day mode shows the Pacific time, date, and Eastern time bubbles in the weekday-selector slot', () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date'] });
+    vi.setSystemTime(new Date(2026, 9, 3, 10, 0)); // Oct 3 2026, a Saturday
+
+    render(<DayPlanner />);
+
+    expect(screen.getByText(/PST$/)).toBeInTheDocument();
+    expect(screen.getByText('Saturday October 3, 2026')).toBeInTheDocument();
+    expect(screen.getByText(/EST$/)).toBeInTheDocument();
+
+    vi.useRealTimers();
+  });
+
+  test('switching to Week mode hides the day-info bubbles and shows the weekday selector instead', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 0, 5, 10, 0)); // Jan 5 2026 is a Monday
+
+    render(<DayPlanner />);
+    expect(screen.getByText(/Monday January 5, 2026/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('switch'));
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+
+    expect(screen.queryByText(/January 5, 2026/)).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^Mon/ })).toBeInTheDocument();
+
+    vi.useRealTimers();
+  });
+
+  test('toolbar buttons carry mode-appropriate tooltips instead of a visible caption', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 0, 5, 10, 0)); // Jan 5 2026 is a Monday
+
+    render(<DayPlanner />);
+
+    expect(screen.getByRole('button', { name: 'Download image' })).toHaveAttribute(
+      'title',
+      'Downloads this single day as an image'
+    );
+    expect(screen.getByRole('button', { name: 'View all tasks' })).toHaveAttribute(
+      'title',
+      "Shows this single day's tasks"
+    );
+    expect(screen.getByRole('button', { name: 'Clear' })).toHaveAttribute(
+      'title',
+      "Clears this single day's tasks"
+    );
+    expect(screen.queryByText(/act on this single day/)).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('switch'));
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+
+    expect(screen.getByRole('button', { name: 'Download image' })).toHaveAttribute(
+      'title',
+      'Downloads all 7 days as one stacked image'
+    );
+    expect(screen.getByRole('button', { name: 'View all tasks' })).toHaveAttribute(
+      'title',
+      "Shows all 7 days' tasks grouped by weekday"
+    );
+    expect(screen.getByRole('button', { name: 'Clear' })).toHaveAttribute(
+      'title',
+      "Clears only the selected day's tasks"
+    );
+    expect(screen.queryByText(/aggregate all 7 days/)).not.toBeInTheDocument();
+
+    vi.useRealTimers();
+  });
+
   test('switching modes does not affect the shared to-do list', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date(2026, 0, 5, 10, 0)); // Jan 5 2026 is a Monday
