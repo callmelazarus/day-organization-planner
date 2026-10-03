@@ -37,8 +37,32 @@ confirmation prompt) removes every segment from both dials.
 
 A circular 🕐 button, top-left, toggles a thin red line marking the current
 time on whichever dial it falls on (using the browser's local time — no
-timezone lookup needed). Between midnight and 7am, when neither dial is
-showing that range, the line simply doesn't appear on either one.
+timezone lookup needed). It's on by default on page load. Between midnight
+and 7am, when neither dial is showing that range, the line simply doesn't
+appear on either one.
+
+## Day and Week modes
+
+A pill switch, stacked directly below the 🕐 button, toggles between two
+planning modes. It always resets to **Day** mode on page load.
+
+- **Day mode** (default) — the behavior described above: a single day's
+  segments on the Day/Night dials. A row of info bubbles above the dials
+  shows the current date and the time in both Pacific and Eastern time.
+- **Week mode** — a row of seven weekday buttons (Sun–Sat) replaces the
+  info bubbles; clicking one swaps the dials to that weekday's segments.
+  The selected day is highlighted, and entering Week mode always selects
+  today's weekday. Each weekday is a recurring template — its plan persists
+  indefinitely and is overwritten the next time that weekday is planned,
+  independently of the other six days and of Day mode's own plan.
+  - **Download image** and **View all tasks** aggregate across all 7
+    weekdays (a stacked image with one section per day; a task list
+    grouped under weekday headings).
+  - **Clear** stays scoped to only the currently selected weekday.
+
+Switching modes, or switching days within Week mode, crossfades the dial
+content. The to-do list below is unaffected by mode or day — it's the same
+shared list throughout.
 
 ## Mobile layout
 

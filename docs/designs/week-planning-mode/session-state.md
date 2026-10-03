@@ -14,9 +14,14 @@ were written and self-reviewed. `plan.md` (10 TDD steps) was written,
 self-reviewed, and executed end-to-end via subagent-driven development —
 every step implemented, independently code-reviewed, and staged. Final gate
 run: `scripts/validate.sh` — **PASS** (type check clean, lint clean, 241/241
-tests passing, build succeeds). Everything remains staged, nothing
-committed, per this repo's commit protocol.
+tests passing, build succeeds). The user reviewed the staged diff and gave
+the go-ahead; committed as `08eec7e` ("feat: add week planning mode
+alongside single-day mode"). Two follow-up polish commits landed afterward:
+`1cc5215` (day-info bubbles replacing the plain date/time text, plus
+week-mode toolbar/toggle styling) and `42c5907` (a tooltip on the
+current-time toggle). The README was updated separately to document all
+three commits' user-facing behavior.
 
 ## Next action
 
-Awaiting user review of the staged diff before committing.
+None — this design's work is complete and merged to `main`.

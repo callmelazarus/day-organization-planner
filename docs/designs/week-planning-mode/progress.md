@@ -46,5 +46,13 @@ triggered in this app since every row always has exactly 2 dials; and a
 theoretical midnight-boundary test flakiness pattern, inherited from the
 original single-day test).
 
-Everything is staged (`git add`), nothing committed, per this repo's
-commit protocol — awaiting the user's review of the full diff.
+Reviewed by the user and committed as `08eec7e`.
+
+## 2026-10-03 — Follow-up polish
+
+Two small commits landed after the initial merge, outside this design's
+original plan: `1cc5215` added `DayInfoBubbles` (current date plus Pacific/
+Eastern time, shown above the dials in Day mode) and polished week-mode
+toolbar/toggle styling; `42c5907` added a tooltip to the current-time
+toggle button. The README was updated to cover all of this design's
+user-facing behavior, which it had not previously documented.
