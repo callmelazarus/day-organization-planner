@@ -1,5 +1,10 @@
 import { describe, expect, test, vi, beforeEach, afterEach } from 'vitest';
-import { downloadDialsSnapshot, formatSnapshotFilename } from './exportSnapshot';
+import {
+  downloadDialsSnapshot,
+  formatSnapshotFilename,
+  downloadWeekSnapshot,
+  formatWeekSnapshotFilename,
+} from './exportSnapshot';
 
 describe('formatSnapshotFilename', () => {
   test('formats a date as day-planner-YYYY-MM-DD.png', () => {
@@ -108,6 +113,88 @@ describe('downloadDialsSnapshot', () => {
     );
     expect(URL.createObjectURL).toHaveBeenCalled();
     expect(clickedAnchor?.download).toBe(formatSnapshotFilename(new Date()));
+    expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:fake-url');
+  });
+});
+
+describe('formatWeekSnapshotFilename', () => {
+  test('formats a date as week-planner-YYYY-MM-DD.png', () => {
+    const date = new Date(2026, 7, 22);
+    expect(formatWeekSnapshotFilename(date)).toBe('week-planner-2026-08-22.png');
+  });
+});
+
+describe('downloadWeekSnapshot', () => {
+  let fillRect: ReturnType<typeof vi.fn>;
+  let drawImage: ReturnType<typeof vi.fn>;
+  let fillText: ReturnType<typeof vi.fn>;
+  let clickedAnchor: HTMLAnchorElement | undefined;
+
+  beforeEach(() => {
+    vi.stubGlobal('Image', FakeImage);
+
+    fillRect = vi.fn();
+    drawImage = vi.fn();
+    fillText = vi.fn();
+
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({
+      fillRect,
+      drawImage,
+      fillText,
+      set fillStyle(_value: string) {},
+      set font(_value: string) {},
+      set textAlign(_value: string) {},
+    } as unknown as CanvasRenderingContext2D);
+
+    vi.spyOn(HTMLCanvasElement.prototype, 'toBlob').mockImplementation(function (
+      callback: BlobCallback
+    ) {
+      callback(new Blob(['fake'], { type: 'image/png' }));
+    });
+
+    URL.createObjectURL = vi.fn(() => 'blob:fake-url');
+    URL.revokeObjectURL = vi.fn();
+
+    clickedAnchor = undefined;
+    const originalCreateElement = document.createElement.bind(document);
+    vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
+      const element = originalCreateElement(tagName);
+      if (tagName === 'a') {
+        clickedAnchor = element as HTMLAnchorElement;
+        vi.spyOn(element, 'click').mockImplementation(() => {});
+      }
+      return element;
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  test('draws a heading and both dial images for every day row', async () => {
+    const rows = [
+      { heading: 'SUNDAY', svgs: [makeFakeSvg(), makeFakeSvg()], dialLabels: ['☀️ Day', '🌙 Night'] },
+      { heading: 'MONDAY', svgs: [makeFakeSvg(), makeFakeSvg()], dialLabels: ['☀️ Day', '🌙 Night'] },
+    ];
+
+    await downloadWeekSnapshot(rows);
+
+    expect(fillRect).toHaveBeenCalled();
+    expect(drawImage).toHaveBeenCalledTimes(4);
+    expect(fillText).toHaveBeenCalledWith('SUNDAY', expect.any(Number), expect.any(Number));
+    expect(fillText).toHaveBeenCalledWith('MONDAY', expect.any(Number), expect.any(Number));
+  });
+
+  test('exports a PNG and triggers a download with the week-dated filename', async () => {
+    const rows = [
+      { heading: 'SUNDAY', svgs: [makeFakeSvg(), makeFakeSvg()], dialLabels: ['☀️ Day', '🌙 Night'] },
+    ];
+
+    await downloadWeekSnapshot(rows);
+
+    expect(URL.createObjectURL).toHaveBeenCalled();
+    expect(clickedAnchor?.download).toBe(formatWeekSnapshotFilename(new Date()));
     expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:fake-url');
   });
 });

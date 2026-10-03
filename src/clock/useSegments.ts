@@ -10,10 +10,10 @@ export interface UseSegmentsResult {
   clearSegments: () => void;
 }
 
-const STORAGE_KEY = 'circular-clock-mvp:segments';
+export const SEGMENTS_STORAGE_KEY = 'circular-clock-mvp:segments';
 
-function loadSegments(): Segment[] {
-  const raw = localStorage.getItem(STORAGE_KEY);
+function loadSegments(storageKey: string): Segment[] {
+  const raw = localStorage.getItem(storageKey);
   if (!raw) return [];
   try {
     const parsed = JSON.parse(raw);
@@ -23,8 +23,8 @@ function loadSegments(): Segment[] {
   }
 }
 
-function saveSegments(segments: Segment[]): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(segments));
+function saveSegments(storageKey: string, segments: Segment[]): void {
+  localStorage.setItem(storageKey, JSON.stringify(segments));
 }
 
 let idCounter = 0;
@@ -33,12 +33,15 @@ function generateId(): string {
   return `segment-${idCounter}-${Date.now()}`;
 }
 
-export function useSegments(): UseSegmentsResult {
-  const [segments, setSegments] = useState<Segment[]>(() => loadSegments());
+export function useSegments(storageKey: string = SEGMENTS_STORAGE_KEY): UseSegmentsResult {
+  const [segments, setSegments] = useState<Segment[]>(() => loadSegments(storageKey));
 
   useEffect(() => {
-    saveSegments(segments);
-  }, [segments]);
+    if (segments.length === 0 && !localStorage.getItem(storageKey)) {
+      return;
+    }
+    saveSegments(storageKey, segments);
+  }, [storageKey, segments]);
 
   function addSegment(startHour: number, endHour: number, label: string): void {
     const { fill, textColor } = generatePastelColor();

@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeEach } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
-import { useSegments } from './useSegments';
+import { useSegments, SEGMENTS_STORAGE_KEY } from './useSegments';
 
 describe('useSegments', () => {
   beforeEach(() => {
@@ -132,5 +132,29 @@ describe('useSegments', () => {
 
     const { result: reloaded } = renderHook(() => useSegments());
     expect(reloaded.current.segments).toEqual([]);
+  });
+
+  test('accepts a custom storage key so multiple independent instances can coexist', () => {
+    const { result: a } = renderHook(() => useSegments('custom:a'));
+    const { result: b } = renderHook(() => useSegments('custom:b'));
+
+    act(() => {
+      a.current.addSegment(6, 7, 'Gym');
+    });
+
+    expect(a.current.segments).toHaveLength(1);
+    expect(b.current.segments).toHaveLength(0);
+    expect(localStorage.getItem('custom:a')).toContain('Gym');
+    expect(localStorage.getItem('custom:b')).toBeNull();
+  });
+
+  test('a custom storage key never touches the default single-day key', () => {
+    const { result } = renderHook(() => useSegments('custom:a'));
+
+    act(() => {
+      result.current.addSegment(6, 7, 'Gym');
+    });
+
+    expect(localStorage.getItem(SEGMENTS_STORAGE_KEY)).toBeNull();
   });
 });

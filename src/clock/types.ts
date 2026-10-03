@@ -1,5 +1,7 @@
 export type DialType = 'daytime' | 'nighttime';
 
+export type Mode = 'single' | 'week';
+
 export interface Segment {
   id: string;
   startHour: number;

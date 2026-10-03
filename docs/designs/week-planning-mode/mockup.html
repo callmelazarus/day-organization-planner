@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Week mode mockup</title>
+<style>
+  :root {
+    --bg: #242424;
+    --panel: #1a1a1a;
+    --dial-base: #2e2e2e;
+    --day-accent: #f5b942;
+    --night-accent: #6c63ff;
+    --text: rgba(255, 255, 255, 0.87);
+    --muted: #999;
+    --teal: #1f9e9e;
+    --teal-bg: #0f3d3d;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Poppins', system-ui, Avenir, Helvetica, Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 24px 16px 60px;
+  }
+  .app {
+    width: 100%;
+    max-width: 640px;
+    text-align: center;
+  }
+  h1 { font-size: 1.6rem; margin: 0 0 28px; }
+  .note {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin: 4px 0 28px;
+    line-height: 1.5;
+  }
+  .note code { color: #ccc; }
+
+  /* --- week day selector --- */
+  #dayRow {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    min-height: 40px;
+    transition: opacity 220ms ease;
+  }
+  #dayRow[hidden] { display: none; }
+  #dayRow.fade { opacity: 0; }
+  .day-btn {
+    border: 1px solid #3a3a3a;
+    background: var(--panel);
+    color: var(--muted);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 150ms ease;
+  }
+  .day-btn:hover { border-color: var(--teal); }
+  .day-btn.selected {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #e7fbf8;
+    box-shadow: 0 0 0 3px rgba(31, 158, 158, 0.3);
+  }
+  .day-btn.is-today::after {
+    content: '•';
+    margin-left: 4px;
+    color: inherit;
+  }
+
+  /* --- dials --- */
+  #dialsRow {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 36px;
+    transition: opacity 180ms ease;
+  }
+  #dialsRow.fade { opacity: 0; }
+  .dial-col { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .dial {
+    position: relative;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+  }
+  .dial .hole {
+    position: absolute;
+    inset: 36px;
+    border-radius: 50%;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+  .dial-label { font-size: 1.1rem; }
+
+  /* --- existing current-time toggle, already fixed at top-left in the real app --- */
+  #currentTimeToggle {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid #e7fbf8; /* "on" state border, now the default */
+    background-color: var(--teal);
+    color: #e7fbf8;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+    box-shadow: 0 0 0 3px rgba(31, 158, 158, 0.35);
+    z-index: 5;
+  }
+
+  /* --- mode toggle: pinned top-left of the viewport, above the clock --- */
+  #modeToggleWrap {
+    position: fixed;
+    top: 76px; /* stacked below the existing current-time circle button */
+    left: 16px;
+    z-index: 5;
+  }
+  #modeToggle {
+    position: relative;
+    display: inline-flex;
+    border: 1px solid #3a3a3a;
+    border-radius: 999px;
+    background: var(--panel);
+    padding: 3px;
+    cursor: pointer;
+    user-select: none;
+  }
+  #modeToggle .thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: calc(50% - 3px);
+    height: calc(100% - 6px);
+    border-radius: 999px;
+    background: var(--teal);
+    transition: transform 220ms ease;
+  }
+  #modeToggle.week .thumb { transform: translateX(100%); }
+  #modeToggle span {
+    position: relative;
+    z-index: 1;
+    padding: 7px 16px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--muted);
+    transition: color 150ms ease;
+    min-width: 80px;
+  }
+  #modeToggle.single span:first-child,
+  #modeToggle.week span:last-child {
+    color: #e7fbf8;
+  }
+
+  /* --- toolbar --- */
+  .toolbar {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .toolbar button {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.55em 1.1em;
+    font-size: 0.9rem;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #1a1a1a;
+    color: var(--text);
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .toolbar button:hover { border-color: #646cff; }
+  .scope-hint {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  /* --- todo list placeholder (unchanged across modes) --- */
+  .todo-panel {
+    border: 1px dashed #3a3a3a;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: left;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  .todo-panel h3 {
+    margin: 0 0 8px;
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+</style>
+</head>
+<body>
+<button id="currentTimeToggle" title="Toggle current time line (existing feature) — now defaults ON" aria-pressed="true">🕐</button>
+<div class="app">
+  <h1>Day / Week planner — layout mockup</h1>
+  <p class="note">
+    Not a real clock dial (segments are approximated with CSS conic-gradients) —
+    this is only to confirm <strong>placement</strong>, the <strong>day switch</strong>,
+    and the <strong>crossfade transitions</strong>. Click the switch below the dials,
+    or a weekday button once in week mode.
+  </p>
+
+  <div id="modeToggleWrap">
+    <div id="modeToggle" class="single" role="switch" aria-checked="false">
+      <div class="thumb"></div>
+      <span>Day</span><span>Week</span>
+    </div>
+  </div>
+
+  <div id="dayRow" hidden></div>
+
+  <div id="dialsRow">
+    <div class="dial-col">
+      <div class="dial" id="dayDial"><div class="hole" id="dayHole"></div></div>
+      <span class="dial-label">☀️ Day</span>
+    </div>
+    <div class="dial-col">
+      <div class="dial" id="nightDial"><div class="hole" id="nightHole"></div></div>
+      <span class="dial-label">🌙 Night</span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button type="button">Download image</button>
+    <button type="button">View all tasks</button>
+    <button type="button">Clear</button>
+  </div>
+  <div class="scope-hint" id="scopeHint">Download &amp; View all tasks act on this single day.</div>
+
+  <div class="todo-panel">
+    <h3>To-do list (unchanged by mode)</h3>
+    — Call dentist<br>
+    — ★ Finish report<br>
+    — Pick up dry cleaning
+  </div>
+</div>
+
+<script>
+  const DAY_NAMES = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+  const DAY_LABELS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  // mock segment data: each entry is [label, color, percent-of-circle]
+  const SINGLE_DATA = {
+    day: [['Work', '#f5b942', 55], ['Gym', '#7ee787', 20]],
+    night: [['Dinner', '#6c63ff', 25], ['Relax', '#9b8bff', 40]],
+  };
+
+  const WEEK_DATA = {
+    sunday:    { day: [['Church', '#f5b942', 30], ['Family time', '#ffd27d', 40]], night: [['Meal prep', '#6c63ff', 35]] },
+    monday:    { day: [['Work', '#f5b942', 60]], night: [['Gym', '#9b8bff', 20], ['Relax', '#6c63ff', 30]] },
+    tuesday:   { day: [['Work', '#f5b942', 55], ['Doctor', '#ffd27d', 10]], night: [['Dinner', '#6c63ff', 20]] },
+    wednesday: { day: [['Work', '#f5b942', 60]], night: [['Relax', '#6c63ff', 45]] },
+    thursday:  { day: [['Work', '#f5b942', 55]], night: [['Dinner w/ friends', '#9b8bff', 35]] },
+    friday:    { day: [['Work', '#f5b942', 50]], night: [['Movie night', '#6c63ff', 40]] },
+    saturday:  { day: [['Hike', '#f5b942', 45], ['Grocery run', '#ffd27d', 15]], night: [['Game night', '#9b8bff', 35]] },
+  };
+
+  let mode = 'single'; // 'single' | 'week'
+  const todayIndex = new Date().getDay(); // 0=Sunday
+  let selectedDay = DAY_NAMES[todayIndex];
+
+  const dayRow = document.getElementById('dayRow');
+  const dialsRow = document.getElementById('dialsRow');
+  const modeToggle = document.getElementById('modeToggle');
+  const scopeHint = document.getElementById('scopeHint');
+
+  function conicGradient(entries) {
+    let acc = 0;
+    const stops = [];
+    entries.forEach(([label, color, pct]) => {
+      const start = acc;
+      const end = acc + pct;
+      stops.push(`${color} ${start}% ${end}%`);
+      acc = end;
+    });
+    stops.push(`var(--dial-base) ${acc}% 100%`);
+    return `conic-gradient(${stops.join(', ')})`;
+  }
+
+  function renderDials() {
+    const data = mode === 'single' ? SINGLE_DATA : WEEK_DATA[selectedDay];
+    document.getElementById('dayDial').style.background = conicGradient(data.day);
+    document.getElementById('nightDial').style.background = conicGradient(data.night);
+    document.getElementById('dayHole').textContent = data.day.map(d => d[0]).join(' · ') || '—';
+    document.getElementById('nightHole').textContent = data.night.map(d => d[0]).join(' · ') || '—';
+  }
+
+  function renderDayRow() {
+    dayRow.innerHTML = '';
+    DAY_NAMES.forEach((name, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'day-btn' + (name === selectedDay ? ' selected' : '') + (i === todayIndex ? ' is-today' : '');
+      btn.textContent = DAY_LABELS[i];
+      btn.addEventListener('click', () => selectDay(name));
+      dayRow.appendChild(btn);
+    });
+  }
+
+  function crossfade(el, updateFn) {
+    el.classList.add('fade');
+    setTimeout(() => {
+      updateFn();
+      el.classList.remove('fade');
+    }, 180);
+  }
+
+  function selectDay(name) {
+    if (name === selectedDay) return;
+    selectedDay = name;
+    crossfade(dialsRow, renderDials);
+    renderDayRow();
+  }
+
+  function setMode(next) {
+    if (next === mode) return;
+    mode = next;
+    modeToggle.className = mode; // 'single' | 'week'
+    modeToggle.setAttribute('aria-checked', mode === 'week');
+
+    crossfade(dialsRow, renderDials);
+
+    if (mode === 'week') {
+      dayRow.hidden = false;
+      renderDayRow();
+      requestAnimationFrame(() => {
+        dayRow.classList.add('fade');
+        requestAnimationFrame(() => dayRow.classList.remove('fade'));
+      });
+      scopeHint.textContent = 'Download & View all tasks aggregate all 7 days. Clear only wipes the selected day.';
+    } else {
+      dayRow.classList.add('fade');
+      setTimeout(() => { dayRow.hidden = true; }, 180);
+      scopeHint.textContent = 'Download & View all tasks act on this single day.';
+    }
+  }
+
+  modeToggle.addEventListener('click', () => setMode(mode === 'single' ? 'week' : 'single'));
+
+  renderDials();
+</script>
+</body>
+</html>
