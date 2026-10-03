@@ -4,13 +4,15 @@ export interface TimezoneOption {
 }
 
 export const POPULAR_TIMEZONES: TimezoneOption[] = [
-  { city: 'New York', timeZone: 'America/New_York' },
   { city: 'Los Angeles', timeZone: 'America/Los_Angeles' },
+  { city: 'New York', timeZone: 'America/New_York' },
   { city: 'London', timeZone: 'Europe/London' },
   { city: 'Paris', timeZone: 'Europe/Paris' },
-  { city: 'Tokyo', timeZone: 'Asia/Tokyo' },
+  { city: 'Brussels', timeZone: 'Europe/Brussels' },
   { city: 'Dubai', timeZone: 'Asia/Dubai' },
-  { city: 'Sydney', timeZone: 'Australia/Sydney' },
+  { city: 'Manila', timeZone: 'Asia/Manila' },
+  { city: 'Tokyo', timeZone: 'Asia/Tokyo' },
 ];
 
-export const DEFAULT_TIMEZONE: TimezoneOption = POPULAR_TIMEZONES[0];
+export const DEFAULT_TIMEZONE: TimezoneOption =
+  POPULAR_TIMEZONES.find((option) => option.city === 'New York') ?? POPULAR_TIMEZONES[0];
