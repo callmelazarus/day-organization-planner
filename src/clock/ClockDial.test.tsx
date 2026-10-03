@@ -145,6 +145,103 @@ describe('ClockDial', () => {
     expect(container.querySelectorAll('[data-testid="half-hour-tick"]')).toHaveLength(6);
   });
 
+  test('renders no current-time line when currentHour is not provided', () => {
+    const { container } = render(
+      <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />
+    );
+
+    expect(container.querySelector('[data-testid="current-time-line"]')).not.toBeInTheDocument();
+  });
+
+  test('renders no current-time line when currentHour is null', () => {
+    const { container } = render(
+      <ClockDial
+        dial="daytime"
+        segments={[]}
+        onSegmentClick={() => {}}
+        onCreateSegment={() => {}}
+        currentHour={null}
+      />
+    );
+
+    expect(container.querySelector('[data-testid="current-time-line"]')).not.toBeInTheDocument();
+  });
+
+  test('renders a red current-time line when currentHour falls within the daytime dial range', () => {
+    const { container } = render(
+      <ClockDial
+        dial="daytime"
+        segments={[]}
+        onSegmentClick={() => {}}
+        onCreateSegment={() => {}}
+        currentHour={9}
+      />
+    );
+
+    const line = container.querySelector('[data-testid="current-time-line"]');
+    expect(line).toBeInTheDocument();
+    expect(line).toHaveAttribute('stroke', 'red');
+  });
+
+  test('does not render a current-time line on the daytime dial when currentHour is outside its range', () => {
+    const { container } = render(
+      <ClockDial
+        dial="daytime"
+        segments={[]}
+        onSegmentClick={() => {}}
+        onCreateSegment={() => {}}
+        currentHour={20}
+      />
+    );
+
+    expect(container.querySelector('[data-testid="current-time-line"]')).not.toBeInTheDocument();
+  });
+
+  test('does not render a current-time line on the nighttime dial when currentHour is outside its range', () => {
+    const { container } = render(
+      <ClockDial
+        dial="nighttime"
+        segments={[]}
+        onSegmentClick={() => {}}
+        onCreateSegment={() => {}}
+        currentHour={3}
+      />
+    );
+
+    expect(container.querySelector('[data-testid="current-time-line"]')).not.toBeInTheDocument();
+  });
+
+  test('renders a current-time line on the nighttime dial when currentHour falls within its range', () => {
+    const { container } = render(
+      <ClockDial
+        dial="nighttime"
+        segments={[]}
+        onSegmentClick={() => {}}
+        onCreateSegment={() => {}}
+        currentHour={21}
+      />
+    );
+
+    expect(container.querySelector('[data-testid="current-time-line"]')).toBeInTheDocument();
+  });
+
+  test('renders the current-time line at each dial\'s inclusive boundary hours', () => {
+    const { container: daytimeStart } = render(
+      <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} currentHour={7} />
+    );
+    expect(daytimeStart.querySelector('[data-testid="current-time-line"]')).toBeInTheDocument();
+
+    const { container: daytimeEnd } = render(
+      <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} currentHour={18} />
+    );
+    expect(daytimeEnd.querySelector('[data-testid="current-time-line"]')).toBeInTheDocument();
+
+    const { container: nighttimeEnd } = render(
+      <ClockDial dial="nighttime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} currentHour={24} />
+    );
+    expect(nighttimeEnd.querySelector('[data-testid="current-time-line"]')).toBeInTheDocument();
+  });
+
   test('renders no drag preview before any pointer interaction', () => {
     const { container } = render(
       <ClockDial dial="daytime" segments={[]} onSegmentClick={() => {}} onCreateSegment={() => {}} />

@@ -35,6 +35,11 @@ A **"Download image"** button exports a snapshot of just the two dials as a
 PNG file, named `day-planner-YYYY-MM-DD.png`. A **"Clear"** button (with a
 confirmation prompt) removes every segment from both dials.
 
+A circular 🕐 button, top-left, toggles a thin red line marking the current
+time on whichever dial it falls on (using the browser's local time — no
+timezone lookup needed). Between midnight and 7am, when neither dial is
+showing that range, the line simply doesn't appear on either one.
+
 ## Mobile layout
 
 Below a browser width of 480px (phone-sized), the two dials stack vertically

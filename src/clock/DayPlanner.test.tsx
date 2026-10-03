@@ -220,6 +220,34 @@ describe('DayPlanner', () => {
     Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1024 });
   });
 
+  test('renders the current-time toggle button, off by default with no current-time line shown', () => {
+    render(<DayPlanner />);
+
+    const toggle = screen.getByRole('button', { name: /current time/i });
+    expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    expect(document.querySelector('[data-testid="current-time-line"]')).not.toBeInTheDocument();
+  });
+
+  test('clicking the current-time toggle shows a current-time line on the dial matching the current time, and hides it again when clicked off', () => {
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'Date'] });
+    vi.setSystemTime(new Date(2026, 0, 1, 10, 0));
+
+    render(<DayPlanner />);
+
+    const toggle = screen.getByRole('button', { name: /current time/i });
+    fireEvent.click(toggle);
+
+    expect(toggle).toHaveAttribute('aria-pressed', 'true');
+    expect(document.querySelectorAll('[data-testid="current-time-line"]')).toHaveLength(1);
+
+    fireEvent.click(toggle);
+
+    expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    expect(document.querySelector('[data-testid="current-time-line"]')).not.toBeInTheDocument();
+
+    vi.useRealTimers();
+  });
+
   test('the todo list is always visible without needing a button to open it', () => {
     render(<DayPlanner />);
 

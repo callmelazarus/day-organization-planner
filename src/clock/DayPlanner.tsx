@@ -2,14 +2,19 @@ import { useRef, useState } from 'react';
 import type { MouseEvent, ReactElement } from 'react';
 import { ClockDial } from './ClockDial';
 import { ConfirmModal } from './ConfirmModal';
+import { CurrentTimeToggle } from './CurrentTimeToggle';
 import { SegmentPopup } from './SegmentPopup';
 import { TaskListModal } from './TaskListModal';
 import { TodoList } from './TodoList';
+import { getFractionalHour } from './currentTime';
 import { downloadDialsSnapshot } from './exportSnapshot';
+import { useCurrentTime } from './useCurrentTime';
 import { useSegments } from './useSegments';
 import { useTodos } from './useTodos';
 import { MOBILE_BREAKPOINT_PX, useIsMobile } from './useIsMobile';
 import type { Segment } from './types';
+
+const CURRENT_TIME_REFRESH_MS = 30000;
 
 const DAYTIME_LABEL = '☀️ Day';
 const NIGHTTIME_LABEL = '🌙 Night';
@@ -37,8 +42,11 @@ export function DayPlanner(): ReactElement {
   const [pendingEdit, setPendingEdit] = useState<PendingEdit | null>(null);
   const [isTaskListOpen, setIsTaskListOpen] = useState(false);
   const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
+  const [isCurrentTimeOn, setIsCurrentTimeOn] = useState(false);
   const dialsRowRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile(MOBILE_BREAKPOINT_PX);
+  const now = useCurrentTime(CURRENT_TIME_REFRESH_MS);
+  const currentHour = isCurrentTimeOn ? getFractionalHour(now) : null;
 
   const daytimeSegments = segments.filter(
     (segment) => segment.startHour >= 7 && segment.startHour < 18
@@ -76,6 +84,8 @@ export function DayPlanner(): ReactElement {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
+      <CurrentTimeToggle isOn={isCurrentTimeOn} onToggle={() => setIsCurrentTimeOn((prev) => !prev)} />
+
       <div
         ref={dialsRowRef}
         data-testid="dials-row"
@@ -94,6 +104,7 @@ export function DayPlanner(): ReactElement {
             onSegmentClick={handleSegmentClick}
             onCreateSegment={handleCreateSegment}
             pendingRange={daytimePendingRange}
+            currentHour={currentHour}
           />
           <span style={{ fontSize: 20 }}>{DAYTIME_LABEL}</span>
         </div>
@@ -104,6 +115,7 @@ export function DayPlanner(): ReactElement {
             onSegmentClick={handleSegmentClick}
             onCreateSegment={handleCreateSegment}
             pendingRange={nighttimePendingRange}
+            currentHour={currentHour}
           />
           <span style={{ fontSize: 20 }}>{NIGHTTIME_LABEL}</span>
         </div>

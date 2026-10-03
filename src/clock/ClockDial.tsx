@@ -30,6 +30,7 @@ export interface ClockDialProps {
   onSegmentClick: (segment: Segment, event: MouseEvent<SVGElement>) => void;
   onCreateSegment: (startHour: number, endHour: number, anchor: { x: number; y: number }) => void;
   pendingRange?: { startHour: number; endHour: number } | null;
+  currentHour?: number | null;
 }
 
 export function ClockDial({
@@ -38,6 +39,7 @@ export function ClockDial({
   onSegmentClick,
   onCreateSegment,
   pendingRange,
+  currentHour = null,
 }: ClockDialProps): ReactElement {
   const svgRef = useRef<SVGSVGElement>(null);
   const [dragStartHour, setDragStartHour] = useState<number | null>(null);
@@ -47,6 +49,8 @@ export function ClockDial({
   const usedStartAngle = hourToAngle(dial, hours[0]);
   const usedEndAngle = hourToAngle(dial, hours[hours.length - 1]);
   const isFullCircle = usedEndAngle - usedStartAngle >= 360;
+  const showsCurrentTime =
+    currentHour !== null && currentHour >= hours[0] && currentHour <= hours[hours.length - 1];
   const activePreview = computeDragPreview(dial, dragStartHour, dragCurrentHour, CENTER, CENTER, INNER_RADIUS, OUTER_RADIUS);
   const preview =
     activePreview ??
@@ -212,6 +216,28 @@ export function ClockDial({
           onClick={onSegmentClick}
         />
       ))}
+      {showsCurrentTime &&
+        (() => {
+          const angle = hourToAngle(dial, currentHour as number);
+          const rad = ((angle - 90) * Math.PI) / 180;
+          const x1 = CENTER;
+          const y1 = CENTER;
+          const x2 = CENTER + OUTER_RADIUS * Math.cos(rad);
+          const y2 = CENTER + OUTER_RADIUS * Math.sin(rad);
+          return (
+            <line
+              data-testid="current-time-line"
+              x1={x1}
+              y1={y1}
+              x2={x2}
+              y2={y2}
+              stroke="red"
+              strokeWidth={2}
+              strokeLinecap="round"
+              pointerEvents="none"
+            />
+          );
+        })()}
       {preview &&
         (preview.isFullCircle ? (
           <circle
