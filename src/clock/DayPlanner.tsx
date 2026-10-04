@@ -319,6 +319,10 @@ export function DayPlanner(): ReactElement {
         onClearAll={clearTodos}
       />
 
+      <span style={{ fontSize: 12, color: '#777' }}>
+        Tip: press ⌘⇧D (or Ctrl⇧D) to switch between day and week mode
+      </span>
+
       {isTaskListOpen && mode === 'single' && (
         <TaskListModal segments={singleDay.segments} onClose={() => setIsTaskListOpen(false)} />
       )}
