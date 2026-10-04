@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { MouseEvent, ReactElement } from 'react';
 import { ClockDial } from './ClockDial';
 import { ConfirmModal } from './ConfirmModal';
@@ -137,6 +137,18 @@ export function DayPlanner(): ReactElement {
       if (nextMode === 'week') setSelectedDay(getTodayWeekday());
     });
   }
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent): void {
+      const isModeShortcut = (event.metaKey || event.ctrlKey) && event.shiftKey && event.key.toLowerCase() === 'd';
+      if (!isModeShortcut) return;
+      event.preventDefault();
+      handleToggleMode();
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- handleToggleMode is a plain function redefined each render; mode/isFaded are its only reactive inputs
+  }, [mode, isFaded]);
 
   function handleSelectDay(day: WeekDay): void {
     if (isFaded) return;
