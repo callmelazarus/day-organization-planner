@@ -44,3 +44,9 @@ export function getTodayWeekday(now: Date = new Date()): WeekDay {
 export function weekdayStorageKey(day: WeekDay): string {
   return `circular-clock-mvp:week:${day}`;
 }
+
+export function getAdjacentWeekday(day: WeekDay, direction: 'next' | 'previous'): WeekDay {
+  const index = WEEKDAYS.indexOf(day);
+  const delta = direction === 'next' ? 1 : -1;
+  return WEEKDAYS[(index + delta + WEEKDAYS.length) % WEEKDAYS.length];
+}

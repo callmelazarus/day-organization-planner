@@ -18,7 +18,7 @@ import { useSegments } from './useSegments';
 import { useTodos } from './useTodos';
 import { useWeekSegments } from './useWeekSegments';
 import { MOBILE_BREAKPOINT_PX, useIsMobile } from './useIsMobile';
-import { WEEKDAYS, WEEKDAY_FULL_LABELS, getTodayWeekday } from './weekDays';
+import { WEEKDAYS, WEEKDAY_FULL_LABELS, getAdjacentWeekday, getTodayWeekday } from './weekDays';
 import type { WeekDay } from './weekDays';
 import type { Mode, Segment } from './types';
 
@@ -140,15 +140,28 @@ export function DayPlanner(): ReactElement {
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent): void {
-      const isModeShortcut = (event.metaKey || event.ctrlKey) && event.shiftKey && event.key.toLowerCase() === 'd';
-      if (!isModeShortcut) return;
-      event.preventDefault();
-      handleToggleMode();
+      const hasShortcutModifier = (event.metaKey || event.ctrlKey) && event.shiftKey;
+      if (!hasShortcutModifier) return;
+
+      if (event.key.toLowerCase() === 'd') {
+        event.preventDefault();
+        handleToggleMode();
+        return;
+      }
+
+      if (mode !== 'week') return;
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        handleSelectDay(getAdjacentWeekday(selectedDay, 'next'));
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        handleSelectDay(getAdjacentWeekday(selectedDay, 'previous'));
+      }
     }
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- handleToggleMode is a plain function redefined each render; mode/isFaded are its only reactive inputs
-  }, [mode, isFaded]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- handleToggleMode/handleSelectDay are plain functions redefined each render; mode/isFaded/selectedDay are their only reactive inputs
+  }, [mode, isFaded, selectedDay]);
 
   function handleSelectDay(day: WeekDay): void {
     if (isFaded) return;
@@ -320,7 +333,8 @@ export function DayPlanner(): ReactElement {
       />
 
       <span style={{ fontSize: 12, color: '#777' }}>
-        Tip: press ⌘⇧D (or Ctrl⇧D) to switch between day and week mode
+        Tip: press ⌘+Shift+D (or Ctrl+Shift+D) to switch between day and week mode
+        {mode === 'week' && ', and ⌘+Shift+← / → (or Ctrl+Shift+← / →) to move between days'}
       </span>
 
       {isTaskListOpen && mode === 'single' && (

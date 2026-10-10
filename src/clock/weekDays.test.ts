@@ -5,6 +5,7 @@ import {
   WEEKDAY_FULL_LABELS,
   getTodayWeekday,
   weekdayStorageKey,
+  getAdjacentWeekday,
 } from './weekDays';
 
 describe('weekDays', () => {
@@ -30,5 +31,15 @@ describe('weekDays', () => {
     const keys = WEEKDAYS.map(weekdayStorageKey);
     expect(new Set(keys).size).toBe(WEEKDAYS.length);
     expect(weekdayStorageKey('sunday')).toBe('circular-clock-mvp:week:sunday');
+  });
+
+  test('getAdjacentWeekday advances to the next day, wrapping Saturday to Sunday', () => {
+    expect(getAdjacentWeekday('monday', 'next')).toBe('tuesday');
+    expect(getAdjacentWeekday('saturday', 'next')).toBe('sunday');
+  });
+
+  test('getAdjacentWeekday goes back to the previous day, wrapping Sunday to Saturday', () => {
+    expect(getAdjacentWeekday('monday', 'previous')).toBe('sunday');
+    expect(getAdjacentWeekday('sunday', 'previous')).toBe('saturday');
   });
 });
