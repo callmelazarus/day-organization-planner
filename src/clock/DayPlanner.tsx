@@ -5,6 +5,8 @@ import { ConfirmModal } from './ConfirmModal';
 import { CurrentTimeToggle } from './CurrentTimeToggle';
 import { DayInfoBubbles } from './DayInfoBubbles';
 import { ModeToggle } from './ModeToggle';
+import { NotesPanel } from './NotesPanel';
+import { NotesToggle } from './NotesToggle';
 import { SegmentPopup } from './SegmentPopup';
 import { TaskListModal } from './TaskListModal';
 import { TodoList } from './TodoList';
@@ -14,6 +16,7 @@ import { getFractionalHour } from './currentTime';
 import { downloadDialsSnapshot, downloadWeekSnapshot } from './exportSnapshot';
 import { useCrossfadeTransition } from './useCrossfadeTransition';
 import { useCurrentTime } from './useCurrentTime';
+import { useNotes } from './useNotes';
 import { useSegments } from './useSegments';
 import { useTodos } from './useTodos';
 import { useWeekSegments } from './useWeekSegments';
@@ -59,6 +62,7 @@ export function DayPlanner(): ReactElement {
   const week = useWeekSegments();
   const { todos, addTodo, deleteTodo, toggleStar, toggleDone, moveTodoUp, clearTodos } =
     useTodos();
+  const { notes, setNotes } = useNotes();
 
   const [mode, setMode] = useState<Mode>('single');
   const [selectedDay, setSelectedDay] = useState<WeekDay>(() => getTodayWeekday());
@@ -67,6 +71,7 @@ export function DayPlanner(): ReactElement {
   const [isTaskListOpen, setIsTaskListOpen] = useState(false);
   const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
   const [isCurrentTimeOn, setIsCurrentTimeOn] = useState(true);
+  const [isNotesOpen, setIsNotesOpen] = useState(false);
   const dialsRowRef = useRef<HTMLDivElement>(null);
   const weekExportRefs = useRef<Record<WeekDay, HTMLDivElement | null>>({
     sunday: null,
@@ -226,7 +231,14 @@ export function DayPlanner(): ReactElement {
           isOn={isCurrentTimeOn}
           onToggle={() => setIsCurrentTimeOn((prev) => !prev)}
         />
+        <NotesToggle isOpen={isNotesOpen} onToggle={() => setIsNotesOpen((prev) => !prev)} />
       </div>
+      <NotesPanel
+        isOpen={isNotesOpen}
+        notes={notes}
+        onChange={setNotes}
+        onOpen={() => setIsNotesOpen(true)}
+      />
 
       <div style={{ opacity: isFaded ? 0 : 1, transition: 'opacity 160ms ease' }}>
         {mode === 'week' ? (
