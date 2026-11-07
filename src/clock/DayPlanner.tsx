@@ -238,6 +238,7 @@ export function DayPlanner(): ReactElement {
         notes={notes}
         onChange={setNotes}
         onOpen={() => setIsNotesOpen(true)}
+        onClose={() => setIsNotesOpen(false)}
       />
 
       <div style={{ opacity: isFaded ? 0 : 1, transition: 'opacity 160ms ease' }}>

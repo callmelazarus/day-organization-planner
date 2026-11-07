@@ -7,6 +7,7 @@ export interface NotesPanelProps {
   notes: string;
   onChange: (notes: string) => void;
   onOpen: () => void;
+  onClose: () => void;
 }
 
 const PEEK_WIDTH_PX = 44;
@@ -15,6 +16,7 @@ const PANEL_BG = '#1a1a1a';
 const BORDER = '#3a3a3a';
 const ACCENT = '#1f9e9e';
 const COPIED_FEEDBACK_MS = 1500;
+const TOGGLE_SELECTOR = '[aria-controls="notes-panel"]';
 
 type CopyKind = 'plain' | 'research';
 
@@ -29,9 +31,23 @@ const COPY_BUTTON_BASE: CSSProperties = {
   fontFamily: 'inherit',
 };
 
-export function NotesPanel({ isOpen, notes, onChange, onOpen }: NotesPanelProps): ReactElement {
+export function NotesPanel({ isOpen, notes, onChange, onOpen, onClose }: NotesPanelProps): ReactElement {
   const [copied, setCopied] = useState<CopyKind | null>(null);
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const panelRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    function handlePointerDown(event: PointerEvent): void {
+      const target = event.target as Element | null;
+      if (panelRef.current?.contains(target)) return;
+      // The toggle button handles its own click; closing here too would reopen it.
+      if (target?.closest(TOGGLE_SELECTOR)) return;
+      onClose();
+    }
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [isOpen, onClose]);
 
   useEffect(
     () => () => {
@@ -56,6 +72,7 @@ export function NotesPanel({ isOpen, notes, onChange, onOpen }: NotesPanelProps)
 
   return (
     <aside
+      ref={panelRef}
       id="notes-panel"
       aria-label="Notes"
       style={{
