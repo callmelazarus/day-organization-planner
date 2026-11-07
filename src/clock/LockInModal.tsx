@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import type { ReactElement } from 'react';
 
 export interface LockInModalProps {
@@ -8,7 +9,8 @@ const ACCENT = '#1f9e9e';
 const COUNTDOWN_COLOR = '#2fd06f';
 
 export function LockInModal({ timeLabel }: LockInModalProps): ReactElement {
-  return (
+  // Portaled to <body> so its z-index isn't trapped inside the timer's stacking context.
+  return createPortal(
     <div
       role="dialog"
       aria-modal="true"
@@ -59,6 +61,7 @@ export function LockInModal({ timeLabel }: LockInModalProps): ReactElement {
           {timeLabel}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
