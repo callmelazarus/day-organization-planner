@@ -8,6 +8,7 @@ export interface NotesPanelProps {
 }
 
 const PEEK_WIDTH_PX = 44;
+const PANEL_VERTICAL_GAP_PX = 84;
 const PANEL_BG = '#1a1a1a';
 const BORDER = '#3a3a3a';
 const ACCENT = '#1f9e9e';
@@ -19,12 +20,12 @@ export function NotesPanel({ isOpen, notes, onChange, onOpen }: NotesPanelProps)
       aria-label="Notes"
       style={{
         position: 'fixed',
-        top: 84,
+        top: PANEL_VERTICAL_GAP_PX,
+        bottom: PANEL_VERTICAL_GAP_PX,
         left: 0,
         zIndex: 5,
         width: '25vw',
         minWidth: 280,
-        height: 'min(65vh, 540px)',
         boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
