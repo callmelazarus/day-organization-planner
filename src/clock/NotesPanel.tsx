@@ -1,4 +1,6 @@
-import type { ReactElement } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { CSSProperties, ReactElement } from 'react';
+import { buildResearchPrompt } from './notesPrompt';
 
 export interface NotesPanelProps {
   isOpen: boolean;
@@ -12,8 +14,46 @@ const PANEL_VERTICAL_GAP_PX = 84;
 const PANEL_BG = '#1a1a1a';
 const BORDER = '#3a3a3a';
 const ACCENT = '#1f9e9e';
+const COPIED_FEEDBACK_MS = 1500;
+
+type CopyKind = 'plain' | 'research';
+
+const COPY_BUTTON_BASE: CSSProperties = {
+  height: 36,
+  border: `1px solid ${BORDER}`,
+  borderRadius: 999,
+  backgroundColor: PANEL_BG,
+  color: '#ccc',
+  cursor: 'pointer',
+  padding: 0,
+  fontFamily: 'inherit',
+};
 
 export function NotesPanel({ isOpen, notes, onChange, onOpen }: NotesPanelProps): ReactElement {
+  const [copied, setCopied] = useState<CopyKind | null>(null);
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+    },
+    []
+  );
+
+  function copyToClipboard(kind: CopyKind): void {
+    const text = kind === 'research' ? buildResearchPrompt(notes) : notes;
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setCopied(kind);
+        if (resetTimerRef.current) clearTimeout(resetTimerRef.current);
+        resetTimerRef.current = setTimeout(() => setCopied(null), COPIED_FEEDBACK_MS);
+      })
+      .catch((error: unknown) => {
+        console.error('Failed to copy notes', error);
+      });
+  }
+
   return (
     <aside
       id="notes-panel"
@@ -73,6 +113,27 @@ export function NotesPanel({ isOpen, notes, onChange, onOpen }: NotesPanelProps)
             padding: 12,
           }}
         />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12 }}>
+          <button
+            type="button"
+            onClick={() => copyToClipboard('plain')}
+            aria-label="Copy notes"
+            title="Copy notes"
+            tabIndex={isOpen ? 0 : -1}
+            style={{ ...COPY_BUTTON_BASE, width: 36, borderRadius: '50%', fontSize: '1rem' }}
+          >
+            {copied === 'plain' ? '✅' : '📋'}
+          </button>
+          <button
+            type="button"
+            onClick={() => copyToClipboard('research')}
+            title="Copy notes with a research prompt for Claude"
+            tabIndex={isOpen ? 0 : -1}
+            style={{ ...COPY_BUTTON_BASE, padding: '0 14px', fontSize: '0.8rem' }}
+          >
+            {copied === 'research' ? 'copied ✓' : 'copy-research'}
+          </button>
+        </div>
       </div>
       {!isOpen && (
         <button
