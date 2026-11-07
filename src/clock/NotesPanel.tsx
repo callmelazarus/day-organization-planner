@@ -106,12 +106,9 @@ export function NotesPanel({ isOpen, notes, onChange, onOpen, onClose }: NotesPa
           transition: isOpen ? 'none' : 'visibility 0s 0.35s',
         }}
       >
-        <h2 style={{ margin: '0 0 4px', fontSize: '1.05rem', fontWeight: 600, color: ACCENT }}>
+        <h2 style={{ margin: '0 0 12px', fontSize: '1.05rem', fontWeight: 600, color: ACCENT }}>
           Notes
         </h2>
-        <p style={{ margin: '0 0 12px', fontSize: '0.75rem', color: '#888' }}>
-          Saved automatically in this browser.
-        </p>
         <textarea
           aria-label="Notes"
           value={notes}

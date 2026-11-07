@@ -230,4 +230,34 @@ describe('usePomodoroTimer', () => {
       });
     }).not.toThrow();
   });
+
+  test('lockIn() starts a 7 minute countdown regardless of the current time', () => {
+    const { result } = renderHook(() => usePomodoroTimer());
+
+    act(() => {
+      result.current.lockIn();
+    });
+    expect(result.current.remainingSeconds).toBe(420);
+    expect(result.current.isRunning).toBe(true);
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(result.current.remainingSeconds).toBe(419);
+  });
+
+  test('lockIn() completes after 7 minutes', () => {
+    const { result } = renderHook(() => usePomodoroTimer());
+
+    act(() => {
+      result.current.lockIn();
+    });
+    act(() => {
+      vi.advanceTimersByTime(420 * 1000);
+    });
+
+    expect(result.current.remainingSeconds).toBe(0);
+    expect(result.current.isRunning).toBe(false);
+    expect(result.current.isComplete).toBe(true);
+  });
 });

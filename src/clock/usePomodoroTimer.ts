@@ -7,10 +7,12 @@ export interface UsePomodoroTimerResult {
   start: () => void;
   pause: () => void;
   reset: () => void;
+  lockIn: () => void;
   adjustMinutes: (deltaMinutes: number) => void;
 }
 
 const DURATION_SECONDS = 20 * 60;
+const LOCK_IN_SECONDS = 7 * 60;
 
 export function usePomodoroTimer(): UsePomodoroTimerResult {
   const [remainingSeconds, setRemainingSeconds] = useState(DURATION_SECONDS);
@@ -42,6 +44,13 @@ export function usePomodoroTimer(): UsePomodoroTimerResult {
     setIsRunning(true);
   }
 
+  function lockIn(): void {
+    endTimeRef.current = Date.now() + LOCK_IN_SECONDS * 1000;
+    setRemainingSeconds(LOCK_IN_SECONDS);
+    setIsComplete(false);
+    setIsRunning(true);
+  }
+
   function pause(): void {
     setIsRunning(false);
   }
@@ -61,5 +70,5 @@ export function usePomodoroTimer(): UsePomodoroTimerResult {
     });
   }
 
-  return { remainingSeconds, isRunning, isComplete, start, pause, reset, adjustMinutes };
+  return { remainingSeconds, isRunning, isComplete, start, pause, reset, lockIn, adjustMinutes };
 }

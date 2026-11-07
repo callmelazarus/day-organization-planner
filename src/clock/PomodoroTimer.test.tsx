@@ -200,4 +200,33 @@ describe('PomodoroTimer', () => {
     expect(MockNotification.instances).toHaveLength(0);
     expect(screen.getByText('00:00')).toHaveStyle({ color: 'rgb(255, 0, 0)' });
   });
+
+  test('Lock in starts a 7 minute countdown and shows the lock in modal', () => {
+    render(<PomodoroTimer />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Lock in' }));
+
+    const dialog = screen.getByRole('dialog', { name: 'Lock in' });
+    expect(dialog).toHaveTextContent('07:00');
+    advance(1000);
+    expect(screen.getByRole('dialog', { name: 'Lock in' })).toHaveTextContent('06:59');
+  });
+
+  test('the lock in modal closes by itself when the countdown reaches zero', () => {
+    render(<PomodoroTimer />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Lock in' }));
+    advance(7 * 60 * 1000);
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(screen.getByText('00:00')).toBeInTheDocument();
+  });
+
+  test('no lock in modal appears for a normal Start', () => {
+    render(<PomodoroTimer />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Start' }));
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
 });

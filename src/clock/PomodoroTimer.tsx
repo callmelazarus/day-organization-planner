@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { ReactElement } from 'react';
+import { LockInModal } from './LockInModal';
 import { usePomodoroTimer } from './usePomodoroTimer';
 import { MOBILE_BREAKPOINT_PX, useIsMobile } from './useIsMobile';
 
@@ -17,16 +18,27 @@ function requestNotificationPermissionIfUndecided(): void {
 }
 
 export function PomodoroTimer(): ReactElement | null {
-  const { remainingSeconds, isRunning, isComplete, start, pause, reset, adjustMinutes } =
+  const { remainingSeconds, isRunning, isComplete, start, pause, reset, lockIn, adjustMinutes } =
     usePomodoroTimer();
+  const [isLockedIn, setIsLockedIn] = useState(false);
   const isMobile = useIsMobile(MOBILE_BREAKPOINT_PX);
 
   useEffect(() => {
     if (!isComplete) return;
     if (typeof Notification === 'undefined') return;
     if (Notification.permission !== 'granted') return;
-    new Notification('Pomodoro complete', { body: 'Your 20-minute block is up.' });
+    new Notification('Pomodoro complete', { body: 'Your timer is up.' });
   }, [isComplete]);
+
+  useEffect(() => {
+    if (isComplete) setIsLockedIn(false);
+  }, [isComplete]);
+
+  function handleLockInClick(): void {
+    requestNotificationPermissionIfUndecided();
+    lockIn();
+    setIsLockedIn(true);
+  }
 
   function handleStartClick(): void {
     requestNotificationPermissionIfUndecided();
@@ -91,7 +103,11 @@ export function PomodoroTimer(): ReactElement | null {
         <button type="button" onClick={reset}>
           Reset
         </button>
+        <button type="button" onClick={handleLockInClick}>
+          Lock in
+        </button>
       </div>
+      {isLockedIn && <LockInModal timeLabel={formatTime(remainingSeconds)} />}
     </div>
   );
 }
