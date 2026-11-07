@@ -1,20 +1,27 @@
 import { createPortal } from 'react-dom';
-import type { ReactElement } from 'react';
+import type { MouseEvent, ReactElement } from 'react';
 
 export interface LockInModalProps {
   timeLabel: string;
+  isComplete: boolean;
+  onClose: () => void;
 }
 
 const ACCENT = '#1f9e9e';
 const COUNTDOWN_COLOR = '#2fd06f';
 
-export function LockInModal({ timeLabel }: LockInModalProps): ReactElement {
+export function LockInModal({ timeLabel, isComplete, onClose }: LockInModalProps): ReactElement {
+  function handleBackdropClick(event: MouseEvent<HTMLDivElement>): void {
+    if (isComplete && event.target === event.currentTarget) onClose();
+  }
+
   // Portaled to <body> so its z-index isn't trapped inside the timer's stacking context.
   return createPortal(
     <div
       role="dialog"
       aria-modal="true"
       aria-label="Lock in"
+      onClick={handleBackdropClick}
       style={{
         position: 'fixed',
         inset: 0,
@@ -47,19 +54,38 @@ export function LockInModal({ timeLabel }: LockInModalProps): ReactElement {
             color: ACCENT,
           }}
         >
-          Lock in
+          {isComplete ? 'Well done. Keep going.' : 'Lock in'}
         </h1>
-        <div
-          style={{
-            fontSize: '6rem',
-            lineHeight: 1,
-            fontWeight: 600,
-            color: COUNTDOWN_COLOR,
-            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
-          }}
-        >
-          {timeLabel}
-        </div>
+        {isComplete ? (
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              padding: '8px 22px',
+              border: '1px solid #3a3a3a',
+              borderRadius: 999,
+              backgroundColor: 'transparent',
+              color: '#bbb',
+              fontSize: '0.9rem',
+              fontFamily: 'inherit',
+              cursor: 'pointer',
+            }}
+          >
+            Close
+          </button>
+        ) : (
+          <div
+            style={{
+              fontSize: '6rem',
+              lineHeight: 1,
+              fontWeight: 600,
+              color: COUNTDOWN_COLOR,
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace',
+            }}
+          >
+            {timeLabel}
+          </div>
+        )}
       </div>
     </div>,
     document.body

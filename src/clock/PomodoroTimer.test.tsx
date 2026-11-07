@@ -212,11 +212,21 @@ describe('PomodoroTimer', () => {
     expect(screen.getByRole('dialog', { name: 'Lock in' })).toHaveTextContent('06:59');
   });
 
-  test('the lock in modal closes by itself when the countdown reaches zero', () => {
+  test('when the countdown ends the modal stays open with a well done message', () => {
     render(<PomodoroTimer />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Lock in' }));
     advance(7 * 60 * 1000);
+
+    expect(screen.getByRole('heading', { name: 'Well done. Keep going.' })).toBeInTheDocument();
+  });
+
+  test('the well done modal can be closed', () => {
+    render(<PomodoroTimer />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Lock in' }));
+    advance(7 * 60 * 1000);
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(screen.getByText('00:00')).toBeInTheDocument();

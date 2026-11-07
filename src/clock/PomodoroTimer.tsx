@@ -30,10 +30,6 @@ export function PomodoroTimer(): ReactElement | null {
     new Notification('Pomodoro complete', { body: 'Your timer is up.' });
   }, [isComplete]);
 
-  useEffect(() => {
-    if (isComplete) setIsLockedIn(false);
-  }, [isComplete]);
-
   function handleLockInClick(): void {
     requestNotificationPermissionIfUndecided();
     lockIn();
@@ -107,7 +103,13 @@ export function PomodoroTimer(): ReactElement | null {
           Lock in
         </button>
       </div>
-      {isLockedIn && <LockInModal timeLabel={formatTime(remainingSeconds)} />}
+      {isLockedIn && (
+        <LockInModal
+          timeLabel={formatTime(remainingSeconds)}
+          isComplete={isComplete}
+          onClose={() => setIsLockedIn(false)}
+        />
+      )}
     </div>
   );
 }
