@@ -7,6 +7,7 @@ export interface NotesToggleProps {
 
 const TOGGLE_COLOR = '#1f9e9e';
 const TOGGLE_TEXT_COLOR = '#e7fbf8';
+const CLOSED_COLOR = '#1a1a1a';
 
 export function NotesToggle({ isOpen, onToggle }: NotesToggleProps): ReactElement {
   return (
@@ -22,14 +23,13 @@ export function NotesToggle({ isOpen, onToggle }: NotesToggleProps): ReactElemen
         height: 48,
         borderRadius: '50%',
         border: '1px solid #3a3a3a',
-        backgroundColor: TOGGLE_COLOR,
+        backgroundColor: isOpen ? TOGGLE_COLOR : CLOSED_COLOR,
         color: TOGGLE_TEXT_COLOR,
         fontSize: '1.4rem',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 0,
-        opacity: isOpen ? 1 : 0.75,
       }}
     >
       📝
