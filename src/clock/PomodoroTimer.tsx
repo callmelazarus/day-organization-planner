@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react';
 import type { ReactElement } from 'react';
+import { AvatarCanvas } from './avatar/AvatarCanvas';
+import {
+  IDLE_ANIMATIONS,
+  LOCK_IN_ANIMATIONS,
+  WORK_ANIMATIONS,
+  randomIndex,
+} from './avatar/avatarAnimations';
 import { LockInModal } from './LockInModal';
 import { usePomodoroTimer } from './usePomodoroTimer';
 import { MOBILE_BREAKPOINT_PX, useIsMobile } from './useIsMobile';
@@ -21,6 +28,9 @@ export function PomodoroTimer(): ReactElement | null {
   const { remainingSeconds, isRunning, isComplete, start, pause, reset, lockIn, adjustMinutes } =
     usePomodoroTimer();
   const [isLockedIn, setIsLockedIn] = useState(false);
+  const [idleIndex, setIdleIndex] = useState(() => randomIndex(IDLE_ANIMATIONS.length));
+  const [workIndex, setWorkIndex] = useState(() => randomIndex(WORK_ANIMATIONS.length));
+  const [lockInIndex, setLockInIndex] = useState(() => randomIndex(LOCK_IN_ANIMATIONS.length));
   const isMobile = useIsMobile(MOBILE_BREAKPOINT_PX);
 
   useEffect(() => {
@@ -30,18 +40,31 @@ export function PomodoroTimer(): ReactElement | null {
     new Notification('Pomodoro complete', { body: 'Your timer is up.' });
   }, [isComplete]);
 
+  useEffect(() => {
+    if (isComplete) setIdleIndex(randomIndex(IDLE_ANIMATIONS.length));
+  }, [isComplete]);
+
   function handleLockInClick(): void {
     requestNotificationPermissionIfUndecided();
+    setLockInIndex(randomIndex(LOCK_IN_ANIMATIONS.length));
     lockIn();
     setIsLockedIn(true);
   }
 
   function handleStartClick(): void {
     requestNotificationPermissionIfUndecided();
+    setWorkIndex(randomIndex(WORK_ANIMATIONS.length));
     start();
   }
 
   if (isMobile) return null;
+
+  const lockInAnimation = LOCK_IN_ANIMATIONS[lockInIndex];
+  const cornerAnimation = isRunning
+    ? isLockedIn
+      ? lockInAnimation
+      : WORK_ANIMATIONS[workIndex]
+    : IDLE_ANIMATIONS[idleIndex];
 
   return (
     <div
@@ -56,6 +79,7 @@ export function PomodoroTimer(): ReactElement | null {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <AvatarCanvas animation={cornerAnimation} scale={3} />
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <button
             type="button"
@@ -107,6 +131,7 @@ export function PomodoroTimer(): ReactElement | null {
         <LockInModal
           timeLabel={formatTime(remainingSeconds)}
           isComplete={isComplete}
+          animation={lockInAnimation}
           onClose={() => setIsLockedIn(false)}
         />
       )}

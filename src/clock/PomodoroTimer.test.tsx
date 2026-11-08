@@ -1,6 +1,11 @@
 import { describe, expect, test, beforeEach, afterEach, vi } from 'vitest';
 import { act, render, screen, cleanup, fireEvent } from '@testing-library/react';
 import { PomodoroTimer } from './PomodoroTimer';
+import {
+  IDLE_ANIMATIONS,
+  LOCK_IN_ANIMATIONS,
+  WORK_ANIMATIONS,
+} from './avatar/avatarAnimations';
 
 class MockNotification {
   static permission: NotificationPermission = 'default';
@@ -238,5 +243,38 @@ describe('PomodoroTimer', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Start' }));
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  describe('avatar', () => {
+    function avatarName(): string {
+      return screen.getByRole('img').getAttribute('aria-label') ?? '';
+    }
+    const names = (list: { name: string }[]): string[] => list.map((a) => `${a.name} animation`);
+
+    test('shows an idle animation when the timer is stopped', () => {
+      render(<PomodoroTimer />);
+      expect(names(IDLE_ANIMATIONS)).toContain(avatarName());
+    });
+
+    test('shows a working animation while the timer runs', () => {
+      render(<PomodoroTimer />);
+      fireEvent.click(screen.getByRole('button', { name: 'Start' }));
+      expect(names(WORK_ANIMATIONS)).toContain(avatarName());
+    });
+
+    test('shows a lock in animation in the corner and the modal while locked in', () => {
+      render(<PomodoroTimer />);
+      fireEvent.click(screen.getByRole('button', { name: 'Lock in' }));
+      const labels = screen.getAllByRole('img').map((el) => el.getAttribute('aria-label') ?? '');
+      expect(labels).toHaveLength(2);
+      labels.forEach((label) => expect(names(LOCK_IN_ANIMATIONS)).toContain(label));
+    });
+
+    test('goes back to an idle animation after the timer is paused', () => {
+      render(<PomodoroTimer />);
+      fireEvent.click(screen.getByRole('button', { name: 'Start' }));
+      fireEvent.click(screen.getByRole('button', { name: 'Pause' }));
+      expect(names(IDLE_ANIMATIONS)).toContain(avatarName());
+    });
   });
 });
