@@ -9,6 +9,7 @@ import {
 } from './avatar/avatarAnimations';
 import { AvatarPickerModal } from './AvatarPickerModal';
 import { LockInModal } from './LockInModal';
+import { TimerBar } from './TimerBar';
 import { useAvatarChoice } from './useAvatarChoice';
 import { usePomodoroTimer } from './usePomodoroTimer';
 import { MOBILE_BREAKPOINT_PX, useIsMobile } from './useIsMobile';
@@ -143,6 +144,7 @@ export function PomodoroTimer(): ReactElement | null {
           Lock in
         </button>
       </div>
+      <TimerBar isRunning={isRunning} />
       {isPickerOpen && (
         <AvatarPickerModal
           selectedId={avatarId}

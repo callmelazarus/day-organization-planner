@@ -318,4 +318,23 @@ describe('PomodoroTimer', () => {
       expect(screen.getByRole('radio', { name: 'Gal' })).toHaveAttribute('aria-checked', 'true');
     });
   });
+
+  describe('timer bar', () => {
+    test('is hidden until the timer starts, and hides again when paused', () => {
+      render(<PomodoroTimer />);
+      expect(screen.getByTestId('timer-bar')).toHaveStyle({ opacity: '0' });
+
+      fireEvent.click(screen.getByRole('button', { name: 'Start' }));
+      expect(screen.getByTestId('timer-bar')).toHaveStyle({ opacity: '1' });
+
+      fireEvent.click(screen.getByRole('button', { name: 'Pause' }));
+      expect(screen.getByTestId('timer-bar')).toHaveStyle({ opacity: '0' });
+    });
+
+    test('is visible during lock in', () => {
+      render(<PomodoroTimer />);
+      fireEvent.click(screen.getByRole('button', { name: 'Lock in' }));
+      expect(screen.getByTestId('timer-bar')).toHaveStyle({ opacity: '1' });
+    });
+  });
 });
