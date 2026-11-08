@@ -7,7 +7,9 @@ import {
   WORK_ANIMATIONS,
   randomIndex,
 } from './avatar/avatarAnimations';
+import { AvatarPickerModal } from './AvatarPickerModal';
 import { LockInModal } from './LockInModal';
+import { useAvatarChoice } from './useAvatarChoice';
 import { usePomodoroTimer } from './usePomodoroTimer';
 import { MOBILE_BREAKPOINT_PX, useIsMobile } from './useIsMobile';
 
@@ -28,6 +30,8 @@ export function PomodoroTimer(): ReactElement | null {
   const { remainingSeconds, isRunning, isComplete, start, pause, reset, lockIn, adjustMinutes } =
     usePomodoroTimer();
   const [isLockedIn, setIsLockedIn] = useState(false);
+  const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const { avatarId, setAvatarId } = useAvatarChoice();
   const [idleIndex, setIdleIndex] = useState(() => randomIndex(IDLE_ANIMATIONS.length));
   const [workIndex, setWorkIndex] = useState(() => randomIndex(WORK_ANIMATIONS.length));
   const [lockInIndex, setLockInIndex] = useState(() => randomIndex(LOCK_IN_ANIMATIONS.length));
@@ -79,7 +83,19 @@ export function PomodoroTimer(): ReactElement | null {
       }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <AvatarCanvas animation={cornerAnimation} scale={3} />
+        <button
+          type="button"
+          onClick={() => setIsPickerOpen(true)}
+          aria-label="Change avatar"
+          style={{ padding: 0, border: 'none', background: 'none', lineHeight: 0, cursor: 'pointer' }}
+        >
+          <AvatarCanvas
+            animation={cornerAnimation}
+            avatarId={avatarId}
+            scale={3}
+            title={`${cornerAnimation.description} (click to change avatar)`}
+          />
+        </button>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <button
             type="button"
@@ -127,11 +143,22 @@ export function PomodoroTimer(): ReactElement | null {
           Lock in
         </button>
       </div>
+      {isPickerOpen && (
+        <AvatarPickerModal
+          selectedId={avatarId}
+          onSelect={(id) => {
+            setAvatarId(id);
+            setIsPickerOpen(false);
+          }}
+          onClose={() => setIsPickerOpen(false)}
+        />
+      )}
       {isLockedIn && (
         <LockInModal
           timeLabel={formatTime(remainingSeconds)}
           isComplete={isComplete}
           animation={lockInAnimation}
+          avatarId={avatarId}
           onClose={() => setIsLockedIn(false)}
         />
       )}

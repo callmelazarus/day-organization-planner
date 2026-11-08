@@ -277,4 +277,33 @@ describe('PomodoroTimer', () => {
       expect(names(IDLE_ANIMATIONS)).toContain(avatarName());
     });
   });
+
+  describe('avatar picker', () => {
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    test('clicking the avatar opens the picker', () => {
+      render(<PomodoroTimer />);
+      fireEvent.click(screen.getByRole('button', { name: 'Change avatar' }));
+      expect(screen.getByRole('dialog', { name: 'Choose your avatar' })).toBeInTheDocument();
+    });
+
+    test('choosing an avatar closes the picker and remembers the choice', () => {
+      render(<PomodoroTimer />);
+      fireEvent.click(screen.getByRole('button', { name: 'Change avatar' }));
+
+      fireEvent.click(screen.getByRole('radio', { name: 'Ninja' }));
+
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+      expect(localStorage.getItem('circular-clock-mvp:avatar')).toBe('ninja');
+    });
+
+    test('reopening the picker shows the saved avatar as selected', () => {
+      localStorage.setItem('circular-clock-mvp:avatar', 'gal');
+      render(<PomodoroTimer />);
+      fireEvent.click(screen.getByRole('button', { name: 'Change avatar' }));
+      expect(screen.getByRole('radio', { name: 'Gal' })).toHaveAttribute('aria-checked', 'true');
+    });
+  });
 });

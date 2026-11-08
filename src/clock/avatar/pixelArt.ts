@@ -1,3 +1,6 @@
+import { DEFAULT_AVATAR_ID, getAvatarStyle } from './avatarStyles';
+import type { AvatarStyle } from './avatarStyles';
+
 export type Ctx = CanvasRenderingContext2D;
 
 export interface AvatarAnimation {
@@ -42,6 +45,13 @@ export function withAlpha(ctx: Ctx, alpha: number, draw: () => void): void {
   ctx.globalAlpha = previous;
 }
 
+const avatarStyles = new WeakMap<Ctx, AvatarStyle>();
+
+/** Sets which avatar `person` draws on this context, so animations don't each need to know. */
+export function setAvatarStyle(ctx: Ctx, style: AvatarStyle): void {
+  avatarStyles.set(ctx, style);
+}
+
 export interface PersonOptions {
   hair?: string;
   body?: string;
@@ -58,12 +68,15 @@ export interface PersonOptions {
 }
 
 export function person(ctx: Ctx, x: number, y: number, o: PersonOptions = {}): void {
-  const hair = o.hair ?? 'h';
-  const body = o.body ?? 'b';
-  const pants = o.pants ?? 'p';
+  const style = avatarStyles.get(ctx) ?? getAvatarStyle(DEFAULT_AVATAR_ID);
+  const hair = o.hair ?? style.hair;
+  const body = o.body ?? style.body;
+  const pants = o.pants ?? style.pants;
+  const band = o.band ?? style.band;
   const legs = o.legs ?? 0;
   const al = o.al ?? 0;
   const ar = o.ar ?? 0;
+  const armColor = style.sleeves ? body : 's';
 
   if (o.spikes) {
     for (const [dx, dy] of [
@@ -78,14 +91,25 @@ export function person(ctx: Ctx, x: number, y: number, o: PersonOptions = {}): v
   rect(ctx, x + 2, y + 2, 6, 3, 's');
   rect(ctx, x + 2, y + 2, 1, 2, hair);
   rect(ctx, x + 7, y + 2, 1, 2, hair);
+  if (style.longHair) {
+    rect(ctx, x + 1, y + 1, 1, 5, hair);
+    rect(ctx, x + 8, y + 1, 1, 5, hair);
+    rect(ctx, x + 7, y, 2, 1, '#f472b6');
+  }
+  if (style.mask) {
+    rect(ctx, x + 2, y + 2, 6, 1, hair);
+    rect(ctx, x + 2, y + 4, 6, 1, hair);
+  }
   const eye = o.closed ? '#c99a6e' : (o.eye ?? 'k');
   rect(ctx, x + 3, y + 3, 1, 1, eye);
   rect(ctx, x + 6, y + 3, 1, 1, eye);
-  if (o.band) rect(ctx, x + 2, y + 1, 6, 1, o.band);
+  if (band) rect(ctx, x + 2, y + 1, 6, 1, band);
   rect(ctx, x + 2, y + 5, 6, 4, body);
   if (!o.noarms) {
-    rect(ctx, x + 1, y + 5 + al, 1, 3, 's');
-    rect(ctx, x + 8, y + 5 + ar, 1, 3, 's');
+    rect(ctx, x + 1, y + 5 + al, 1, 2, armColor);
+    rect(ctx, x + 1, y + 7 + al, 1, 1, 's');
+    rect(ctx, x + 8, y + 5 + ar, 1, 2, armColor);
+    rect(ctx, x + 8, y + 7 + ar, 1, 1, 's');
   }
   if (o.seated) return;
   if (legs === 0) {
@@ -102,6 +126,7 @@ export function person(ctx: Ctx, x: number, y: number, o: PersonOptions = {}): v
     rect(ctx, x + 0, y + 12, 2, 1, 'o');
     rect(ctx, x + 8, y + 11, 2, 1, 'o');
   }
+  if (style.skirt) rect(ctx, x + 1, y + 9, 8, 2, style.skirt);
 }
 
 function drawPixels(ctx: Ctx, x: number, y: number, pixels: number[][], col: string): void {

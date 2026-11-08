@@ -1,5 +1,7 @@
 import { describe, expect, test, vi } from 'vitest';
 import { IDLE_ANIMATIONS, LOCK_IN_ANIMATIONS, WORK_ANIMATIONS, randomIndex } from './avatarAnimations';
+import { AVATAR_STYLES } from './avatarStyles';
+import { setAvatarStyle } from './pixelArt';
 import type { Ctx } from './pixelArt';
 
 function makeRecordingContext(): { ctx: Ctx; fillRect: ReturnType<typeof vi.fn> } {
@@ -40,6 +42,34 @@ describe('avatar animations', () => {
         expect(ctx.globalAlpha).toBe(1);
       }
     });
+  });
+});
+
+describe('every avatar style', () => {
+  test.each(AVATAR_STYLES.map((style) => [style.label, style] as const))(
+    '%s can draw all 30 animations',
+    (_label, style) => {
+      for (const [, animations] of GROUPS) {
+        for (const animation of animations) {
+          for (let t = 0; t < 12; t += 1) {
+            const { ctx, fillRect } = makeRecordingContext();
+            setAvatarStyle(ctx, style);
+            expect(() => animation.draw(ctx, t)).not.toThrow();
+            expect(fillRect).toHaveBeenCalled();
+          }
+        }
+      }
+    }
+  );
+
+  test('each style draws the character differently', () => {
+    const calls = AVATAR_STYLES.map((style) => {
+      const { ctx, fillRect } = makeRecordingContext();
+      setAvatarStyle(ctx, style);
+      IDLE_ANIMATIONS[0].draw(ctx, 0);
+      return JSON.stringify(fillRect.mock.calls);
+    });
+    expect(new Set(calls).size).toBe(AVATAR_STYLES.length);
   });
 });
 

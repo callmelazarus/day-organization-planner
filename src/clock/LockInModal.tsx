@@ -1,19 +1,21 @@
 import { createPortal } from 'react-dom';
 import type { MouseEvent, ReactElement } from 'react';
 import { AvatarCanvas } from './avatar/AvatarCanvas';
+import type { AvatarId } from './avatar/avatarStyles';
 import type { AvatarAnimation } from './avatar/pixelArt';
 
 export interface LockInModalProps {
   timeLabel: string;
   isComplete: boolean;
   animation: AvatarAnimation;
+  avatarId: AvatarId;
   onClose: () => void;
 }
 
 const ACCENT = '#1f9e9e';
 const COUNTDOWN_COLOR = '#2fd06f';
 
-export function LockInModal({ timeLabel, isComplete, animation, onClose }: LockInModalProps): ReactElement {
+export function LockInModal({ timeLabel, isComplete, animation, avatarId, onClose }: LockInModalProps): ReactElement {
   function handleBackdropClick(event: MouseEvent<HTMLDivElement>): void {
     if (isComplete && event.target === event.currentTarget) onClose();
   }
@@ -60,7 +62,7 @@ export function LockInModal({ timeLabel, isComplete, animation, onClose }: LockI
           {isComplete ? 'Well done. Keep going.' : 'Lock in'}
         </h1>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
-          <AvatarCanvas animation={animation} scale={8} />
+          <AvatarCanvas animation={animation} avatarId={avatarId} scale={8} />
         </div>
         {isComplete ? (
           <button
