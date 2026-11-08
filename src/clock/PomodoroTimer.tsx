@@ -89,12 +89,7 @@ export function PomodoroTimer(): ReactElement | null {
           aria-label="Change avatar"
           style={{ padding: 0, border: 'none', background: 'none', lineHeight: 0, cursor: 'pointer' }}
         >
-          <AvatarCanvas
-            animation={cornerAnimation}
-            avatarId={avatarId}
-            scale={3}
-            title={`${cornerAnimation.description} (click to change avatar)`}
-          />
+          <AvatarCanvas animation={cornerAnimation} avatarId={avatarId} scale={3} />
         </button>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <button
