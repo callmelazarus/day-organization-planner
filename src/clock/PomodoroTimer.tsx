@@ -48,6 +48,11 @@ export function PomodoroTimer(): ReactElement | null {
     if (isComplete) setIdleIndex(randomIndex(IDLE_ANIMATIONS.length));
   }, [isComplete]);
 
+  function handleResetClick(): void {
+    setIdleIndex(randomIndex(IDLE_ANIMATIONS.length));
+    reset();
+  }
+
   function handleLockInClick(): void {
     requestNotificationPermissionIfUndecided();
     setLockInIndex(randomIndex(LOCK_IN_ANIMATIONS.length));
@@ -131,7 +136,7 @@ export function PomodoroTimer(): ReactElement | null {
             Start
           </button>
         )}
-        <button type="button" onClick={reset}>
+        <button type="button" onClick={handleResetClick}>
           Reset
         </button>
         <button type="button" onClick={handleLockInClick}>

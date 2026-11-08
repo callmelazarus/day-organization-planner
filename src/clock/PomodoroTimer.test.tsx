@@ -270,6 +270,18 @@ describe('PomodoroTimer', () => {
       labels.forEach((label) => expect(names(LOCK_IN_ANIMATIONS)).toContain(label));
     });
 
+    test('Reset picks a new random idle animation', () => {
+      const random = vi.spyOn(Math, 'random').mockReturnValue(0);
+      render(<PomodoroTimer />);
+      expect(avatarName()).toBe(`${IDLE_ANIMATIONS[0].name} animation`);
+
+      random.mockReturnValue(0.99);
+      fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
+
+      expect(avatarName()).toBe(`${IDLE_ANIMATIONS[IDLE_ANIMATIONS.length - 1].name} animation`);
+      random.mockRestore();
+    });
+
     test('goes back to an idle animation after the timer is paused', () => {
       render(<PomodoroTimer />);
       fireEvent.click(screen.getByRole('button', { name: 'Start' }));
