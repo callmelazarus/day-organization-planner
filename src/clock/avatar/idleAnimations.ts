@@ -4,6 +4,7 @@ import type { AvatarAnimation } from './pixelArt';
 export const IDLE_ANIMATIONS: AvatarAnimation[] = [
   {
     name: 'Water the plant',
+    description: 'Watering a little plant, because breaks are for growing things',
     draw: (ctx, t) => {
       const f = t % 4;
       person(ctx, 2, 2, { ar: -1 });
@@ -18,6 +19,7 @@ export const IDLE_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Stroll along',
+    description: 'Taking a leisurely stroll while the timer is stopped',
     draw: (ctx, t) => {
       const x = ((t * 2) % 24) - 3;
       person(ctx, x, 2, { legs: t % 2 ? 2 : 0, al: t % 2 ? -1 : 1, ar: t % 2 ? 1 : -1 });
@@ -26,6 +28,7 @@ export const IDLE_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Big stretch',
+    description: 'Stretching it out with a big yawn-and-reach',
     draw: (ctx, t) => {
       const up = t % 4 < 2;
       person(ctx, 8, 3, { al: up ? -3 : 0, ar: up ? -3 : 0, closed: up });
@@ -37,6 +40,7 @@ export const IDLE_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Standing nap',
+    description: 'Snoozing on his feet. Zzz',
     draw: (ctx, t) => {
       person(ctx, 6, 3 + (t % 2), { closed: true });
       for (let i = 0; i < 3; i += 1) {
@@ -46,6 +50,7 @@ export const IDLE_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Read a book',
+    description: 'Catching up on some reading',
     draw: (ctx, t) => {
       person(ctx, 6, 2, { al: -1, ar: -1 });
       rect(ctx, 8, 8, 8, 4, 'r');
@@ -55,6 +60,7 @@ export const IDLE_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Juggle',
+    description: 'Juggling three balls just to stay sharp',
     draw: (ctx, t) => {
       person(ctx, 6, 3, { al: -1, ar: -1 });
       const path = [[7, 7], [8, 3], [10, 1], [12, 3], [14, 7]];
@@ -66,6 +72,7 @@ export const IDLE_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Go fishing',
+    description: 'Fishing off the dock, waiting for a bite',
     draw: (ctx, t) => {
       rect(ctx, 0, 12, 24, 4, '#2563eb');
       rect(ctx, 0, 11, 10, 1, 'd');
@@ -79,6 +86,7 @@ export const IDLE_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Dance break',
+    description: 'Taking a quick dance break',
     draw: (ctx, t) => {
       const a = t % 2;
       person(ctx, 8, 2 + (a ? 0 : 1), { legs: a ? 2 : 0, al: a ? -3 : 1, ar: a ? 1 : -3 });
@@ -88,6 +96,7 @@ export const IDLE_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Coffee sip',
+    description: 'Sipping a hot coffee',
     draw: (ctx, t) => {
       const up = t % 4 < 2;
       const ar = up ? -2 : 0;
@@ -102,6 +111,7 @@ export const IDLE_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Pet the cat',
+    description: 'Petting a very good cat',
     draw: (ctx, t) => {
       person(ctx, 2, 2, { ar: t % 2 ? 1 : 0 });
       rect(ctx, 13, 11, 6, 3, 'n');

@@ -2,6 +2,7 @@ export type Ctx = CanvasRenderingContext2D;
 
 export interface AvatarAnimation {
   name: string;
+  description: string;
   draw: (ctx: Ctx, t: number) => void;
 }
 

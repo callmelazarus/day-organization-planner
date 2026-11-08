@@ -45,6 +45,7 @@ export function AvatarCanvas({ animation, scale }: AvatarCanvasProps): ReactElem
       height={GRID_HEIGHT}
       role="img"
       aria-label={`${animation.name} animation`}
+      title={animation.description}
       style={{
         width: GRID_WIDTH * scale,
         height: GRID_HEIGHT * scale,

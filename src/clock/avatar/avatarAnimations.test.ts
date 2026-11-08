@@ -20,6 +20,10 @@ describe('avatar animations', () => {
     expect(new Set(animations.map((a) => a.name)).size).toBe(10);
   });
 
+  test.each(GROUPS)('every %s animation has a description for its tooltip', (_label, animations) => {
+    animations.forEach((a) => expect(a.description.length).toBeGreaterThan(10));
+  });
+
   describe.each(GROUPS)('%s', (_label, animations) => {
     test.each(animations.map((a) => [a.name, a] as const))('%s draws every frame without throwing', (_name, animation) => {
       for (let t = 0; t < 40; t += 1) {

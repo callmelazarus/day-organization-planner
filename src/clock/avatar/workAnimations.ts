@@ -10,6 +10,7 @@ function drawLowDesk(ctx: Ctx): void {
 export const WORK_ANIMATIONS: AvatarAnimation[] = [
   {
     name: 'Type at the desk',
+    description: 'Typing away at the desk',
     draw: (ctx, t) => {
       drawChair(ctx, 1);
       person(ctx, 2, 3, { seated: true, al: t % 2, ar: (t + 1) % 2 });
@@ -19,6 +20,7 @@ export const WORK_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Write on a notepad',
+    description: 'Jotting notes down on a notepad',
     draw: (ctx, t) => {
       drawChair(ctx, 1);
       person(ctx, 2, 3, { seated: true, ar: t % 2 });
@@ -31,6 +33,7 @@ export const WORK_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Whiteboard',
+    description: 'Sketching out ideas on the whiteboard',
     draw: (ctx, t) => {
       rect(ctx, 11, 0, 13, 10, 'c');
       rect(ctx, 12, 1, 11, 8, 'w');
@@ -42,6 +45,7 @@ export const WORK_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Study by lamp',
+    description: 'Studying a big book by lamplight',
     draw: (ctx, t) => {
       drawChair(ctx, 1);
       person(ctx, 2, 3, { seated: true, al: -1 });
@@ -56,6 +60,7 @@ export const WORK_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Dual-monitor coding',
+    description: 'Coding across two monitors',
     draw: (ctx, t) => {
       drawChair(ctx, 1);
       person(ctx, 2, 3, { seated: true, al: t % 2, ar: (t + 1) % 2 });
@@ -73,6 +78,7 @@ export const WORK_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Mad scientist',
+    description: 'Mixing bubbling potions in the lab',
     draw: (ctx, t) => {
       person(ctx, 2, 2, { ar: -1, hair: 'w' });
       rect(ctx, 4, 5, 6, 1, 'u');
@@ -88,6 +94,7 @@ export const WORK_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Pull up a chair',
+    description: 'Pulling up a chair to get started, then typing away',
     draw: (ctx, t) => {
       const phase = t % 10;
       const chairX = phase <= 3 ? 11 : phase === 4 ? 10 : phase === 5 ? 8 : 7;
@@ -109,6 +116,7 @@ export const WORK_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Headphones on',
+    description: 'Working with headphones on, music flowing',
     draw: (ctx, t) => {
       drawChair(ctx, 1);
       person(ctx, 2, 3, { seated: true, al: t % 2, ar: (t + 1) % 2 });
@@ -123,6 +131,7 @@ export const WORK_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Sort the paperwork',
+    description: 'Sorting a pile of paperwork, one sheet at a time',
     draw: (ctx, t) => {
       const n = t % 5;
       person(ctx, 8, 2, { al: n % 2 ? -1 : 1, ar: n % 2 ? 1 : -1 });
@@ -136,6 +145,7 @@ export const WORK_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Paint on an easel',
+    description: 'Painting a masterpiece, dab by dab',
     draw: (ctx, t) => {
       rect(ctx, 13, 2, 9, 9, 'w');
       rect(ctx, 13, 2, 9, 1, 'd');

@@ -4,6 +4,7 @@ import type { AvatarAnimation } from './pixelArt';
 export const LOCK_IN_ANIMATIONS: AvatarAnimation[] = [
   {
     name: 'Super saiyan',
+    description: 'Powered up to super saiyan: maximum focus',
     draw: (ctx, t) => {
       withAlpha(ctx, t % 2 ? 0.45 : 0.3, () => rect(ctx, 2, 0, 18, 15, 'y'));
       person(ctx, 7 + (t % 2), 3, { spikes: true, hair: 'y', al: -1, ar: -1, legs: 2 });
@@ -17,6 +18,7 @@ export const LOCK_IN_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Ninja focus',
+    description: 'Meditating like a ninja while orbs circle around',
     draw: (ctx, t) => {
       const y = 3 + (t % 2 ? -1 : 0);
       person(ctx, 8, y, { hair: 'k', body: 'k', pants: 'k', noarms: true, band: 'r' });
@@ -33,6 +35,7 @@ export const LOCK_IN_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Laser eyes',
+    description: 'Blasting the target with laser eyes',
     draw: (ctx, t) => {
       person(ctx, 3, 2, { eye: 'r' });
       rect(ctx, 10, 5, 12, t % 2 ? 2 : 1, 'r');
@@ -45,6 +48,7 @@ export const LOCK_IN_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'On fire',
+    description: 'On fire! Nothing can stop this focus',
     draw: (ctx, t) => {
       person(ctx, 8, 2, { band: 'r', al: -1, ar: -1, legs: 2 });
       rect(ctx, 18, 3 + (t % 2), 3, 1, 'r');
@@ -56,6 +60,7 @@ export const LOCK_IN_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Lightning storm',
+    description: 'Crackling with lightning: pure electric focus',
     draw: (ctx, t) => {
       const flash = t % 3 === 0;
       if (flash) withAlpha(ctx, 0.18, () => rect(ctx, 0, 0, 24, 16, 'w'));
@@ -70,6 +75,7 @@ export const LOCK_IN_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Hyper typing',
+    description: 'Typing at hyper speed with glowing eyes',
     draw: (ctx, t) => {
       drawChair(ctx, 1);
       withAlpha(ctx, 0.3, () => {
@@ -86,6 +92,7 @@ export const LOCK_IN_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Power up the ground',
+    description: 'Powering up so hard the ground cracks and rocks float',
     draw: (ctx, t) => {
       person(ctx, 8, 2, { al: -1, ar: -1, legs: 2 });
       rect(ctx, 2, 15, 20, 1, '#555');
@@ -96,6 +103,7 @@ export const LOCK_IN_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Sword slash',
+    description: 'Slashing through distractions with a sword',
     draw: (ctx, t) => {
       const f = t % 4;
       person(ctx, 3, 2, { ar: [-3, -2, 0, 2][f] });
@@ -115,6 +123,7 @@ export const LOCK_IN_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Rocket hero',
+    description: 'Flying straight ahead like a rocket hero',
     draw: (ctx, t) => {
       const y = 2 + (t % 2 ? -1 : 0);
       for (let i = 0; i < 6; i += 1) withAlpha(ctx, 0.7, () => rect(ctx, (i * 5 + 2) % 24, (t * 3 + i * 5) % 16, 1, 2, 'w'));
@@ -128,6 +137,7 @@ export const LOCK_IN_ANIMATIONS: AvatarAnimation[] = [
   },
   {
     name: 'Cosmic enlightenment',
+    description: 'Floating in cosmic enlightenment with a third eye open',
     draw: (ctx, t) => {
       const y = 3 + (t % 2 ? -1 : 0);
       withAlpha(ctx, 0.25, () => rect(ctx, 3, 0, 18, 16, 'v'));

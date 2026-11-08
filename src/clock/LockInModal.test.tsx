@@ -23,6 +23,11 @@ describe('LockInModal', () => {
       expect(screen.getByRole('img', { name: `${ANIMATION.name} animation` })).toBeInTheDocument();
     });
 
+    test('the avatar has a tooltip describing what it is doing', () => {
+      render(<LockInModal timeLabel="07:00" isComplete={false} animation={ANIMATION} onClose={() => {}} />);
+      expect(screen.getByRole('img')).toHaveAttribute('title', ANIMATION.description);
+    });
+
     test('has no way to dismiss it', () => {
       const handleClose = vi.fn();
       render(<LockInModal timeLabel="07:00" isComplete={false} animation={ANIMATION} onClose={handleClose} />);
